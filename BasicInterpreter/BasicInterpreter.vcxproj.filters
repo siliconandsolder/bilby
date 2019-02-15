@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Native_Functions">
       <UniqueIdentifier>{950ed4e2-fb4f-4455-a9ac-7181d43ea72f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Operation">
+      <UniqueIdentifier>{409e264c-485f-456a-916b-4cc2bf7e36b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Operation">
+      <UniqueIdentifier>{bd72f8a0-819c-4036-8e21-fc9b5e9f1891}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="parser.cpp">
@@ -33,37 +39,16 @@
     <ClCompile Include="expression.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ast_printer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="integer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="float.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="boolean.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="variable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="operator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="statement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="environment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="oper_exceptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="math_func.cpp">
@@ -87,36 +72,30 @@
     <ClCompile Include="beta_instance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="boolean.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="float.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="integer.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="oper_exceptions.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="operator.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="variable.cpp">
+      <Filter>Source Files\Operation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="boolean.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="expression.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="integer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="keywords.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="number.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="operand.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="operation.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="operator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="float.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="oper_exceptions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="parser.hpp">
@@ -128,16 +107,7 @@
     <ClInclude Include="tokenizer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="variable.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="word.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="visitor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ast_printer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="interpreter.hpp">
@@ -175,6 +145,36 @@
     </ClInclude>
     <ClInclude Include="beta_instance.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="float.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="integer.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="boolean.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="number.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="operand.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="operation.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="operator.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="word.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="variable.hpp">
+      <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="oper_exceptions.hpp">
+      <Filter>Header Files\Operation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

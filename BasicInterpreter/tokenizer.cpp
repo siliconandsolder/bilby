@@ -81,7 +81,7 @@ TokenList Tokenizer::tokenize(string_type const & expression)
 	for (;;)
 	{
 
-		while (currentChar != end(expression) && isspace(*currentChar))
+		while (currentChar != end(expression) && (isspace(*currentChar) || *currentChar == '\n'))
 			++currentChar;
 
 		if (currentChar == end(expression)) break;

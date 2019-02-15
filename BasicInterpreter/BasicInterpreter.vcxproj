@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ast_printer.hpp" />
     <ClInclude Include="beta_callable.hpp" />
     <ClInclude Include="beta_class.hpp" />
     <ClInclude Include="beta_instance.hpp" />
@@ -170,7 +169,6 @@
     <ClInclude Include="word.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ast_printer.cpp" />
     <ClCompile Include="beta_class.cpp" />
     <ClCompile Include="beta_instance.cpp" />
     <ClCompile Include="boolean.cpp" />
