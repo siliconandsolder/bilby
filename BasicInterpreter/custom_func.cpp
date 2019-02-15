@@ -1,3 +1,11 @@
+/**	@file custom_func.cpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif implementation of CustomFunc
+*/
+
 #include "custom_func.hpp"
 #include "return.hpp"
 #include "beta_instance.hpp"

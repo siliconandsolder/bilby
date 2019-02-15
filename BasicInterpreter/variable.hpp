@@ -1,3 +1,11 @@
+/**	@file variable.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif a class used to hold any type of operand
+*/
+
 #pragma once
 
 #include "operand.hpp"

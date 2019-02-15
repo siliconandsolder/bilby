@@ -1,3 +1,11 @@
+/**	@file oper_exceptions.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines a few custom exceptions of operation exceptions
+*/
+
 #pragma once
 #include <exception>
 #include <string>

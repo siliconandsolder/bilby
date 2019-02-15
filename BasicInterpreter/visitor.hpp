@@ -1,3 +1,11 @@
+/**	@file visitor.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif visitor classes for expressions and statements (Visitor Pattern)
+*/
+
 #pragma once
 #include "statement.hpp"
 

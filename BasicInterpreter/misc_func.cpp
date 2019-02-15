@@ -1,3 +1,11 @@
+/**	@file math_func.cpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif implementation of miscellaneous functions
+*/
+
 #include "misc_func.hpp"
 #include <ctime>
 #include <chrono>

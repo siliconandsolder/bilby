@@ -1,3 +1,11 @@
+/**	@file beta_class.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines the structure of a user-written class
+*/
+
 #pragma once
 #include <list>
 #include <map>

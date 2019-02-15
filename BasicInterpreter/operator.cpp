@@ -1,3 +1,11 @@
+/**	@file operator.cpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif implementation of Operator classes
+*/
+
 #include "operator.hpp"
 #include "operation.hpp"
 #include "token.hpp"
@@ -404,12 +412,10 @@ Operand::pointer_type Subtraction::perform(std::stack<Operand::pointer_type>& va
 	// possible first values
 	Integer::value_type val_one_int;
 	Float::value_type val_one_real;
-	Boolean::value_type val_one_bool;
 
 	// possible second values
 	Integer::value_type val_two_int;
 	Float::value_type val_two_real;
-	Boolean::value_type val_two_bool;
 
 
 	if (is<Integer>(first))
@@ -480,12 +486,10 @@ Operand::pointer_type Multiplication::perform(std::stack<Operand::pointer_type>&
 	// possible first values
 	Integer::value_type val_one_int;
 	Float::value_type val_one_real;
-	Boolean::value_type val_one_bool;
 
 	// possible second values
 	Integer::value_type val_two_int;
 	Float::value_type val_two_real;
-	Boolean::value_type val_two_bool;
 
 
 	if (is<Integer>(first))
@@ -557,12 +561,10 @@ Operand::pointer_type Division::perform(std::stack<Operand::pointer_type>& value
 	// possible first values
 	Integer::value_type val_one_int;
 	Float::value_type val_one_real;
-	Boolean::value_type val_one_bool;
 
 	// possible second values
 	Integer::value_type val_two_int;
 	Float::value_type val_two_real;
-	Boolean::value_type val_two_bool;
 
 
 	if (is<Integer>(first))

@@ -1,3 +1,11 @@
+/**	@file parser.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines the structure of the language parser
+*/
+
 #pragma once
 #include "visitor.hpp"
 #include <list>
@@ -30,15 +38,12 @@ private:
 	bool isAtEnd();
 	/*template<typename... types>
 	bool match();*/
-	bool check(Token::pointer_type type);
 	Token::pointer_type advance();
 	Token::pointer_type peek();
 	Token::pointer_type previous();
 	template<typename type>
 	Token::pointer_type consume(std::string msg);
-	void synchronize();
 	
-	stmt_p declaration();
 	stmt_p statement();
 	stmt_p classStatement();
 	stmt_p printStatement();

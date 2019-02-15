@@ -1,3 +1,11 @@
+/**	@file statement.cpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif implementation of Statement class
+*/
+
 #include "statement.hpp"
 #include "visitor.hpp"
 

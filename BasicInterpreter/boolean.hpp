@@ -1,3 +1,11 @@
+/**	@file boolean.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines the structure of the boolean operand
+*/
+
 #pragma once
 #include "operand.hpp"
 

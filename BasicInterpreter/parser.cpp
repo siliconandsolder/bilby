@@ -1,3 +1,11 @@
+/**	@file parser.cpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif implementation of Parser class
+*/
+
 #include "parser.hpp"
 #include "operand.hpp"
 #include "operator.hpp"
@@ -25,13 +33,6 @@ Parser::stmt_list Parser::parse()
 	return lstState;
 }
 
-Parser::stmt_p Parser::declaration()
-{
-	if (is<Let>(peek())) return varDeclaration();
-
-	return statement();
-}
-
 /**
 @name:		statement
 @purpose:	returns a statement pointer based on the opening keyword
@@ -40,16 +41,16 @@ Parser::stmt_p Parser::declaration()
 */
 Parser::stmt_p Parser::statement()
 {
-	if (is<If>(peek())) return ifStatement();
-	else if (is<Class>(peek())) return classStatement();
-	else if (is<Func>(peek())) return funcStatement("function");
-	else if (is<For>(peek())) return forStatement();
-	else if (is<While>(peek())) return whileStatement();
-	else if (is<Do>(peek())) return doWhileStatement();
-	else if (is<Print>(peek())) return printStatement();
-	else if (is<Return>(peek())) return retStatement();
-	else if (is<Let>(peek())) return varDeclaration();
-	else if (is<LeftBrace>(peek())) return block();
+	if (check<If>()) return ifStatement();
+	else if (check<Class>()) return classStatement();
+	else if (check<Func>()) return funcStatement("function");
+	else if (check<For>()) return forStatement();
+	else if (check<While>()) return whileStatement();
+	else if (check<Do>()) return doWhileStatement();
+	else if (check<Print>()) return printStatement();
+	else if (check<Return>()) return retStatement();
+	else if (check<Let>()) return varDeclaration();
+	else if (check<LeftBrace>()) return block();
 
 	return expStatement();
 }
@@ -62,7 +63,6 @@ Parser::stmt_p Parser::statement()
 */
 Parser::stmt_p Parser::classStatement()
 {
-	advance();
 	Variable::pointer_type name = convert<Variable>(consume<Variable>("Expected class name."));
 	
 	VariableExpression::pointer_type super = nullptr;
@@ -95,7 +95,6 @@ Parser::stmt_p Parser::classStatement()
 */
 Parser::stmt_p Parser::printStatement()
 {
-	advance();
 	expr_p val = expression();
 	consume<SemiColon>("Expected ';'");
 	stmt_p printer(new StmtPrint(val));
@@ -110,7 +109,6 @@ Parser::stmt_p Parser::printStatement()
 */
 Parser::stmt_p Parser::retStatement()
 {
-	advance();
 	auto ret = convert<Return>(previous());
 	
 	expr_p val = nullptr;
@@ -143,15 +141,11 @@ Parser::stmt_p Parser::expStatement()
 */
 Parser::stmt_p Parser::varDeclaration()
 {
-	advance();
 	Token::pointer_type var = consume<Variable>("Expected a variable name.");
 	
 	expr_p init;
-	if (is<Assignment>(peek()))
-	{
-		advance();
+	if (check<Assignment>())
 		init = expression();
-	}	
 
 	consume<SemiColon>("Expected ';'");
 	stmt_p expr(new StmtVariable(convert<Variable>(var), init));
@@ -166,7 +160,6 @@ Parser::stmt_p Parser::varDeclaration()
 */
 Parser::stmt_p Parser::funcStatement(std::string kind)
 {
-	advance();
 	Variable::pointer_type name = convert<Variable>(consume<Variable>("Expected " + kind + " name"));
 
 	consume<LeftBracket>("Expected '(' after function name");
@@ -208,10 +201,9 @@ Parser::stmt_p Parser::funcStatement(std::string kind)
 */
 Parser::stmt_p Parser::block()
 {
-	advance();
 	stmt_list statements;
 
-	while (!is<RightBrace>(peek()) && !isAtEnd())
+	while (!isAtEnd() && !is<RightBrace>(peek()))
 		statements.push_back(statement());
 
 	consume<RightBrace>("Expected '}'");
@@ -226,18 +218,15 @@ Parser::stmt_p Parser::block()
 */
 Parser::stmt_p Parser::ifStatement()
 {
-	advance();
 	consume<LeftBracket>("Expected '(' after 'if'");
 	expr_p cond = expression();
 	consume<RightBracket>("Expected ')' after if condition.");
 
 	stmt_p thenB = statement();
 	stmt_p elseB = nullptr;
-	if (!isAtEnd() && is<Else>(peek()))
-	{
-		advance();
+	
+	if (check<Else>())
 		elseB = statement();
-	}
 		
 	return stmt_p(new StmtIf(cond, thenB, elseB));
 }
@@ -250,7 +239,6 @@ Parser::stmt_p Parser::ifStatement()
 */
 Parser::stmt_p Parser::whileStatement()
 {
-	advance();
 	consume<LeftBracket>("Expected '(' after 'while'");
 	expr_p cond = expression();
 	consume<RightBracket>("Expected ')' after while condition.");
@@ -267,7 +255,6 @@ Parser::stmt_p Parser::whileStatement()
 */
 Parser::stmt_p Parser::doWhileStatement()
 {
-	advance();
 	stmt_p whileB = statement();
 
 	consume<While>("Expected 'while' keyword after 'do' statement.");
@@ -286,7 +273,6 @@ Parser::stmt_p Parser::doWhileStatement()
 */
 Parser::stmt_p Parser::forStatement()
 {
-	advance();
 	consume<LeftBracket>("Expected '(' after 'for'");
 	
 	stmt_p init;
@@ -334,18 +320,6 @@ Parser::stmt_p Parser::forStatement()
 bool Parser::isAtEnd()
 {
 	return current_ == inTokens_.size();
-}
-
-/**
-@name:		check
-@purpose:	checks if the end of the token list has been reached, and if the parameter matches the type of the current token
-@param:		Token::pointer_type
-@return:	bool
-*/
-bool Parser::check(Token::pointer_type type)
-{
-	if (isAtEnd()) return false;
-	return peek() == type;
 }
 
 /**
@@ -417,19 +391,6 @@ bool Parser::check()
 	return false;
 }
 
-void Parser::synchronize()
-{
-	advance();
-
-	while (!isAtEnd())
-	{
-		if (is<For>(peek()) || is<Print>(peek()) || is<Let>(peek()))
-			return;
-
-		advance();
-	}
-}
-
 /**
 @name:		expression
 @purpose:	returns an assignment expression, or anything of lower precedence
@@ -451,9 +412,8 @@ Parser::expr_p Parser::assignment()
 {
 	expr_p exp = logOr();
 
-	if (!isAtEnd() && is<Assignment>(peek()))
+	if (check<Assignment>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p val = assignment();
 
@@ -483,7 +443,7 @@ Parser::expr_p Parser::logOr()
 {
 	expr_p expr = logAnd();
 
-	if (!isAtEnd() && (is<Or>(peek())))
+	while (check<Or>())
 	{
 		Token::pointer_type oper = previous();
 		expr_p right = logAnd();
@@ -503,9 +463,8 @@ Parser::expr_p Parser::logAnd()
 {
 	expr_p expr = equality();
 
-	if (!isAtEnd() && (is<And>(peek())))
+	while (check<And>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p right = equality();
 		expr.reset(new LogicalExpression(expr, convert<BinaryOperator>(oper), right));
@@ -524,7 +483,7 @@ Parser::expr_p Parser::equality()
 {
 	expr_p exp = comparison();
 	
-	while (!isAtEnd() && (is<Inequality>(peek()) || is<Equality>(peek())))
+	while (check<Inequality>() || check<Equality>())
 	{
 		advance();
 		Token::pointer_type oper = previous();
@@ -545,9 +504,8 @@ Parser::expr_p Parser::comparison()
 {
 	expr_p exp = addition();
 
-	while (!isAtEnd() && (is<Greater>(peek()) || is<GreaterEqual>(peek()) || is<Less>(peek()) || is<LessEqual>(peek())))
+	while (check<Greater>() || check<GreaterEqual>() || check<Less>() || check<LessEqual>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p right = addition();
 		exp.reset(new BinaryExpression(exp, convert<BinaryOperator>(oper), right));
@@ -566,9 +524,8 @@ Parser::expr_p Parser::addition()
 {
 	expr_p exp = multiplication();
 
-	while (!isAtEnd() && (is<Subtraction>(peek()) || is<Addition>(peek())))
+	while (check<Subtraction>() || check<Addition>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p right = multiplication();
 		exp.reset(new BinaryExpression(exp, convert<BinaryOperator>(oper), right));
@@ -587,9 +544,8 @@ Parser::expr_p Parser::multiplication()
 {
 	expr_p exp = unary();
 
-	while (!isAtEnd() && (is<Division>(peek()) || is<Multiplication>(peek())))
+	while (check<Division>() || check<Multiplication>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p right = unary();
 		exp.reset(new BinaryExpression(exp, convert<BinaryOperator>(oper), right));
@@ -606,9 +562,8 @@ Parser::expr_p Parser::multiplication()
 */
 Parser::expr_p Parser::unary()
 {
-	if (!isAtEnd() && (is<Negation>(peek()) || is<Identity>(peek())))
+	if (check<Negation>() || check<Identity>())
 	{
-		advance();
 		Token::pointer_type oper = previous();
 		expr_p right = unary();
 		return expr_p(new UnaryExpression(convert<UnaryOperator>(oper), right));
@@ -629,7 +584,7 @@ Parser::expr_p Parser::call()
 
 	while (true)
 	{
-		if (!isAtEnd() && is<LeftBracket>(peek()))
+		if (check<LeftBracket>())
 			exp = finishCall(exp);
 		else if (check<Dot>())
 		{
@@ -651,48 +606,31 @@ Parser::expr_p Parser::call()
 */
 Parser::expr_p Parser::primary()
 {
-	if (!isAtEnd() && is<False>(peek()))
-	{
-		advance();
+	if (check<False>())
 		return expr_p(new LiteralExpression(LiteralExpression::oper_type(new False())));
-	}
 
-	if (!isAtEnd() && is<True>(peek()))
-	{
-		advance();
+	if (check<True>())
 		return expr_p(new LiteralExpression(LiteralExpression::oper_type(new True())));
-	}
 
-	if (!isAtEnd() && (is<Number>(peek()) || is<Word>(peek())))
-	{
-		advance();
+	if (check<Number>() || check<Word>())
 		return expr_p(new LiteralExpression(convert<Operand>(previous())));
-	}
 
-	if (!isAtEnd() && is<Variable>(peek()))
-	{
-		advance();
+	if (check<Variable>())
 		return expr_p(new VariableExpression(convert<Variable>(previous())));
-	}
 
-	if (!isAtEnd() && is<Me>(peek()))
-	{
-		advance();
+	if (check<Me>())
 		return expr_p(new MeExpression(Variable::pointer_type(new Variable("me"))));
-	}
 
-	if (!isAtEnd() && is<Super>(peek()))
+	if (check<Super>())
 	{
-		advance();
 		Variable::pointer_type keyword(new Variable("super"));
 		consume<Dot>("Expected '.' after 'super'.");
 		Variable::pointer_type method = convert<Variable>(consume<Variable>("Expected superclass method name."));
 		return expr_p(new SuperExpression(keyword, method));
 	}
 
-	if (!isAtEnd() && (is<LeftBracket>(peek())))
+	if (check<LeftBracket>())
 	{
-		advance();
 		expr_p exp = expression();
 		consume<RightBracket>("Expected ')' after expression");
 		return expr_p(new GroupExpression(exp));
@@ -709,15 +647,12 @@ Parser::expr_p Parser::primary()
 */
 Parser::expr_p Parser::finishCall(expr_p callee)
 {
-	advance();
 	list<expr_p> args;
 	
 	if (!isAtEnd() && !is<RightBracket>(peek()))
 	{
 		do
-		{
 			args.push_back(expression());
-		}
 		while(check<Comma>());
 	}
 

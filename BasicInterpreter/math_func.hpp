@@ -1,3 +1,11 @@
+/**	@file math_func.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif a series of native math functions that will be in global scope
+*/
+
 #pragma once
 
 #include "beta_callable.hpp"

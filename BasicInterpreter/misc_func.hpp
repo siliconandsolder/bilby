@@ -1,3 +1,11 @@
+/**	@file misc_func.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif some miscellaneous native functions available in global scope
+*/
+
 #pragma once
 #include "beta_callable.hpp"
 

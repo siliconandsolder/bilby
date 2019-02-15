@@ -1,3 +1,12 @@
+/**	@file resolver.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines the structure of the resolver, which ensures that all variable declarations are 
+			legal and recorded
+*/
+
 #pragma once
 #include "interpreter.hpp"
 #include <list>

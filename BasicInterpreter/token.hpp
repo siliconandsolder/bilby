@@ -1,3 +1,11 @@
+/**	@file token.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif a base class for almost all objects in this project
+*/
+
 #pragma once
 #include <memory>
 #include <vector>

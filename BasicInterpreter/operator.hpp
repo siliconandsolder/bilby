@@ -1,3 +1,11 @@
+/**	@file oper_exceptions.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines a few custom exceptions of operation exceptions
+*/
+
 #pragma once
 
 #include <sstream>
@@ -7,29 +15,10 @@
 #include "operand.hpp"
 #include "oper_exceptions.hpp"
 
-typedef enum
-{
-	MIN = 0,
-	ASSIGNMENT,
-	LOGOR,
-	LOGAND,
-	LOGXOR,
-	RELATIONAL,
-	ADDITIVE,
-	MULTIPLICATIVE,
-	POWER,
-	UNARY,
-	POSTFIX,
-	MAX
-} precedence_type;
-
-#define DEF_PRECENDENCE(category) public: precedence_type getPrecedence() const override { return category; }
-
 class Operator : public Operation
 {
 public:
 	DEF_POINTER_TYPE(Operator)
-	virtual precedence_type getPrecedence() const = 0;
 };
 
 	class UnaryOperator : public Operator
@@ -44,7 +33,6 @@ public:
 			class Factorial : public NonAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Factorial)
-				DEF_PRECENDENCE(POSTFIX)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "!"; }
 			};
@@ -52,7 +40,6 @@ public:
 			class Identity : public NonAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Identity)
-					DEF_PRECENDENCE(UNARY)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "+"; }
 			};
@@ -60,7 +47,6 @@ public:
 			class Negation : public NonAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Negation)
-					DEF_PRECENDENCE(UNARY)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "-"; }
 			};
@@ -68,8 +54,7 @@ public:
 			class Not : public NonAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Not)
-					DEF_PRECENDENCE(UNARY)
-					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
+				virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "!"; }
 			};
 
@@ -85,7 +70,6 @@ public:
 			class Power : public RAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Power)
-				DEF_PRECENDENCE(POWER)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "^"; }
 			};
@@ -95,7 +79,6 @@ public:
 			class Addition : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Addition)
-				DEF_PRECENDENCE(ADDITIVE)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "+"; }
 			};
@@ -103,7 +86,6 @@ public:
 			class Subtraction : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Subtraction)
-					DEF_PRECENDENCE(ADDITIVE)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "-"; }
 			};
@@ -111,7 +93,6 @@ public:
 			class Multiplication : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Multiplication)
-					DEF_PRECENDENCE(MULTIPLICATIVE)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "*"; }
 			};
@@ -119,7 +100,6 @@ public:
 			class Division : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Division)
-					DEF_PRECENDENCE(MULTIPLICATIVE)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "/"; }
 			};
@@ -127,7 +107,6 @@ public:
 			class Modulus : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Modulus)
-					DEF_PRECENDENCE(MULTIPLICATIVE)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "%"; }
 			};
@@ -135,7 +114,6 @@ public:
 			class And : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(And)
-					DEF_PRECENDENCE(LOGAND)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "and"; }
 			};
@@ -143,7 +121,6 @@ public:
 			class Nand : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Nand)
-					DEF_PRECENDENCE(LOGAND)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "nand"; }
 			};
@@ -151,7 +128,6 @@ public:
 			class Or : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Or)
-					DEF_PRECENDENCE(LOGOR)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "or"; }
 			};
@@ -159,7 +135,6 @@ public:
 			class Nor : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Nor)
-					DEF_PRECENDENCE(LOGOR)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "nor"; }
 			};
@@ -167,7 +142,6 @@ public:
 			class Xor : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Xor)
-					DEF_PRECENDENCE(LOGXOR)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "xor"; }
 			};
@@ -175,7 +149,6 @@ public:
 			class Xnor : public LAssocOperator
 			{
 				DEF_IS_CONVERTIBLE_FROM(Xnor)
-					DEF_PRECENDENCE(LOGXOR)
 					virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 				string_type toString() const { return "xnor"; }
 			};
@@ -185,7 +158,6 @@ public:
 				class Equality : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(Equality)
-					DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return "=="; }
 				};
@@ -193,7 +165,6 @@ public:
 				class Greater : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(Greater)
-						DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return ">"; }
 				};
@@ -201,7 +172,6 @@ public:
 				class GreaterEqual : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(GreaterEqual)
-						DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return ">="; }
 				};
@@ -209,7 +179,6 @@ public:
 				class Inequality : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(Inequality)
-						DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return "!="; }
 				};
@@ -217,7 +186,6 @@ public:
 				class Less : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(Less)
-						DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return "<"; }
 				};
@@ -225,7 +193,6 @@ public:
 				class LessEqual : public Relational
 				{
 					DEF_IS_CONVERTIBLE_FROM(LessEqual)
-						DEF_PRECENDENCE(RELATIONAL)
 						virtual Operand::pointer_type perform(std::stack<Operand::pointer_type>&);
 					string_type toString() const { return "=<"; }
 				};

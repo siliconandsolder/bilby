@@ -1,3 +1,11 @@
+/**	@file beta_callable.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif base class for functions
+*/
+
 #pragma once
 #include <list>
 #include "interpreter.hpp"

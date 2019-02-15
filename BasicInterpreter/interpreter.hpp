@@ -1,3 +1,11 @@
+/**	@file intepreter.hpp
+	@author Benjamin Godin
+	@date 2019-02-14
+	@version 1.0.0
+	@note Developed for C++17
+	@breif defines the structure of the language's intepreter
+*/
+
 #pragma once
 #include "visitor.hpp"
 #include "environment.hpp"
