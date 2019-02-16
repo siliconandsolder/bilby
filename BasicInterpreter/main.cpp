@@ -1,5 +1,5 @@
 #include "parser.hpp"
-#include "tokenizer.hpp"
+#include "lexer.hpp"
 #include "interpreter.hpp"
 #include "resolver.hpp"
 #include <iostream>
@@ -9,8 +9,8 @@ int main()
 {	
 	try
 	{
-		Tokenizer tok;
-		TokenList tokens = tok.tokenize("class doughnut { cook() { shout \"fry until brown\"; } } class boston inherits doughnut { cook() { super.cook(); shout \"pipe full of custard.\"; } } boston().cook();");
+		Lexer lex;
+		TokenList tokens = lex.analyze("class doughnut { cook() { shout \"fry until brown\"; } } class boston inherits doughnut { cook() { super.cook(); shout \"pipe full of custard.\"; } } boston().cook();");
 
 		Parser p(tokens);
 		Parser::stmt_list lst = p.parse();

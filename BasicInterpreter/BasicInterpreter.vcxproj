@@ -163,7 +163,7 @@
     <ClInclude Include="return.hpp" />
     <ClInclude Include="statement.hpp" />
     <ClInclude Include="token.hpp" />
-    <ClInclude Include="tokenizer.hpp" />
+    <ClInclude Include="lexer.hpp" />
     <ClInclude Include="variable.hpp" />
     <ClInclude Include="visitor.hpp" />
     <ClInclude Include="word.hpp" />
@@ -188,7 +188,7 @@
     <ClCompile Include="resolver.cpp" />
     <ClCompile Include="statement.cpp" />
     <ClCompile Include="token.cpp" />
-    <ClCompile Include="tokenizer.cpp" />
+    <ClCompile Include="lexer.cpp" />
     <ClCompile Include="variable.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

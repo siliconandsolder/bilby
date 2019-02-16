@@ -33,9 +33,6 @@
     <ClCompile Include="token.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tokenizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="expression.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
     <ClCompile Include="variable.cpp">
       <Filter>Source Files\Operation</Filter>
     </ClCompile>
+    <ClCompile Include="lexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="expression.hpp">
@@ -102,9 +102,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="token.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tokenizer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="visitor.hpp">
@@ -175,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="oper_exceptions.hpp">
       <Filter>Header Files\Operation</Filter>
+    </ClInclude>
+    <ClInclude Include="lexer.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

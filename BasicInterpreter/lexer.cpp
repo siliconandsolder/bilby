@@ -3,10 +3,10 @@
 	@date 2019-02-14
 	@version 1.0.0
 	@note Developed for C++17
-	@breif implementation of Tokenizer class
+	@breif implementation of Lexer class
 */
 
-#include "tokenizer.hpp"
+#include "lexer.hpp"
 #include "word.hpp"
 #include "boolean.hpp"
 #include "float.hpp"
@@ -27,12 +27,12 @@
 using namespace std;
 
 /**
-@name:		Tokenizer
+@name:		Lexer
 @purpose:	defines a series of keywords, constants, and operators
 @param:		null
-@return:	Tokenizer
+@return:	Lexer
 */
-Tokenizer::Tokenizer()
+Lexer::Lexer()
 {
 	// keywords
 	specialTokens_["let"] = make<Let>();
@@ -68,20 +68,19 @@ Tokenizer::Tokenizer()
 }
 
 /**
-@name:		tokenize
+@name:		analyze
 @purpose:	creates a series of tokens based on the characters of the input string
 @param:		string_type const &
 @return:	TokenList
 */
-TokenList Tokenizer::tokenize(string_type const & expression)
+TokenList Lexer::analyze(string_type const & expression)
 {
 	TokenList tokens;
 	auto currentChar = expression.cbegin();
 
 	for (;;)
 	{
-
-		while (currentChar != end(expression) && (isspace(*currentChar) || *currentChar == '\n'))
+		while (currentChar != end(expression) && (isspace(*currentChar) || *currentChar == '\n' || *currentChar == '\r'))
 			++currentChar;
 
 		if (currentChar == end(expression)) break;
@@ -344,10 +343,10 @@ TokenList Tokenizer::tokenize(string_type const & expression)
 /**
 @name:		getIdentifier
 @purpose:	discerns whether a series of alphabetic characters is a keyword or a variable
-@param:		Tokenizer::string_type::const_iterator &, Tokenizer::string_type const &
-@return:	Tokenizer::pointer_type
+@param:		Lexer::string_type::const_iterator &, Lexer::string_type const &
+@return:	Lexer::pointer_type
 */
-Token::pointer_type Tokenizer::getIdentifier(Tokenizer::string_type::const_iterator & curChar, Tokenizer::string_type const & expression)
+Token::pointer_type Lexer::getIdentifier(Lexer::string_type::const_iterator & curChar, Lexer::string_type const & expression)
 {
 	string_type ident;
 	do
@@ -369,10 +368,10 @@ Token::pointer_type Tokenizer::getIdentifier(Tokenizer::string_type::const_itera
 /**
 @name:		getNumber
 @purpose:	nuilds an Integer or Float token based on the input string
-@param:		Tokenizer::string_type::const_iterator &, Tokenizer::string_type const &
-@return:	Tokenizer::pointer_type
+@param:		Lexer::string_type::const_iterator &, Lexer::string_type const &
+@return:	Lexer::pointer_type
 */
-Token::pointer_type Tokenizer::getNumber(Tokenizer::string_type::const_iterator & curChar, Tokenizer::string_type const & expression)
+Token::pointer_type Lexer::getNumber(Lexer::string_type::const_iterator & curChar, Lexer::string_type const & expression)
 {
 	using float_type = boost::multiprecision::number < boost::multiprecision::cpp_dec_float<1000, int32_t, void> >;
 	using int_type = boost::multiprecision::cpp_int;

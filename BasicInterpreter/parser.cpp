@@ -9,7 +9,6 @@
 #include "parser.hpp"
 #include "operand.hpp"
 #include "operator.hpp"
-#include "tokenizer.hpp"
 #include "keywords.hpp"
 #include "integer.hpp"
 #include "boolean.hpp"
@@ -75,13 +74,11 @@ Parser::stmt_p Parser::classStatement()
 	consume<LeftBrace>("Expected '{' before class body.");
 
 	list<StmtFunc::pointer_type> methods;
-	while (!isAtEnd() && !is<RightBrace>(peek()))
-	{
-		--current_;
+	
+	// read methods until the end of the class
+	while (!is<RightBrace>(peek()))
 		methods.push_back(convert<StmtFunc>(funcStatement("method")));
-	}
 		
-
 	consume<RightBrace>("Expected closing brace after class definition.");
 
 	return stmt_p(new StmtClass(name, super, methods));

@@ -9,7 +9,6 @@
 #include "operator.hpp"
 #include "operation.hpp"
 #include "token.hpp"
-#include "tokenizer.hpp"
 #include "integer.hpp"
 #include "float.hpp"
 #include "boolean.hpp"
