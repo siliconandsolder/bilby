@@ -1,5 +1,5 @@
 /**	@file boolean.hpp
-	@author Benjamin Godin
+	@author Garth Santor, modified by Benjamin Godin
 	@date 2019-02-14
 	@version 1.0.0
 	@note Developed for C++17

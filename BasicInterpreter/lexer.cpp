@@ -1,5 +1,5 @@
-/**	@file tokenizer.cpp
-	@author Benjamin Godin
+/**	@file lexer.cpp
+	@author Garth Santor, modified by Benjamin Godin
 	@date 2019-02-14
 	@version 1.0.0
 	@note Developed for C++17

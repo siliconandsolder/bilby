@@ -13,17 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Native_Functions">
-      <UniqueIdentifier>{da25a9dc-6770-40ab-a54e-80bef66ca2ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Native_Functions">
-      <UniqueIdentifier>{950ed4e2-fb4f-4455-a9ac-7181d43ea72f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Operation">
       <UniqueIdentifier>{409e264c-485f-456a-916b-4cc2bf7e36b5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Operation">
       <UniqueIdentifier>{bd72f8a0-819c-4036-8e21-fc9b5e9f1891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Functions">
+      <UniqueIdentifier>{950ed4e2-fb4f-4455-a9ac-7181d43ea72f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Functions">
+      <UniqueIdentifier>{da25a9dc-6770-40ab-a54e-80bef66ca2ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -49,16 +49,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="math_func.cpp">
-      <Filter>Source Files\Native_Functions</Filter>
+      <Filter>Source Files\Functions</Filter>
     </ClCompile>
     <ClCompile Include="math_func_exceptions.cpp">
-      <Filter>Source Files\Native_Functions</Filter>
+      <Filter>Source Files\Functions</Filter>
     </ClCompile>
     <ClCompile Include="misc_func.cpp">
-      <Filter>Source Files\Native_Functions</Filter>
+      <Filter>Source Files\Functions</Filter>
     </ClCompile>
     <ClCompile Include="custom_func.cpp">
-      <Filter>Source Files\Native_Functions</Filter>
+      <Filter>Source Files\Functions</Filter>
     </ClCompile>
     <ClCompile Include="resolver.cpp">
       <Filter>Source Files</Filter>
@@ -117,19 +117,19 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="math_func.hpp">
-      <Filter>Header Files\Native_Functions</Filter>
+      <Filter>Header Files\Functions</Filter>
     </ClInclude>
     <ClInclude Include="math_func_exceptions.hpp">
-      <Filter>Header Files\Native_Functions</Filter>
+      <Filter>Header Files\Functions</Filter>
     </ClInclude>
     <ClInclude Include="beta_callable.hpp">
-      <Filter>Header Files\Native_Functions</Filter>
+      <Filter>Header Files\Functions</Filter>
     </ClInclude>
     <ClInclude Include="misc_func.hpp">
-      <Filter>Header Files\Native_Functions</Filter>
+      <Filter>Header Files\Functions</Filter>
     </ClInclude>
     <ClInclude Include="custom_func.hpp">
-      <Filter>Header Files\Native_Functions</Filter>
+      <Filter>Header Files\Functions</Filter>
     </ClInclude>
     <ClInclude Include="return.hpp">
       <Filter>Header Files</Filter>
