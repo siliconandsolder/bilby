@@ -3,7 +3,7 @@
 	@date 2019-02-14
 	@version 1.0.0
 	@note Developed for C++17
-	@breif a base class for almost all objects in this project
+	@breif a base class for almost all classes in this project
 */
 
 #pragma once
@@ -30,6 +30,8 @@ public:
 	DEF_IS_CONVERTIBLE_FROM(Token)
 };
 
+using TokenList = std::vector<Token::pointer_type>;
+
 template <typename T> Token::pointer_type make() { return Token::pointer_type(new T); }
 
 template <typename T, typename U> Token::pointer_type make(U const& param) { return Token::pointer_type(new T(param)); }
@@ -50,6 +52,3 @@ typename convert_type::pointer_type convert(Token::pointer_type const& tkn)
 {
 	return std::dynamic_pointer_cast<convert_type>(tkn);
 }
-
-typedef std::vector<Token::pointer_type> TokenList;
-typedef std::map<unsigned, std::string> CodeList;
