@@ -74,9 +74,10 @@ public:
 public:
 	Variable::pointer_type name_;
 	VariableExpression::pointer_type super_;
+	std::list<Variable::pointer_type> data_;
 	std::list<StmtFunc::pointer_type> methods_;
 public:
-	StmtClass(Variable::pointer_type name, VariableExpression::pointer_type super, std::list<StmtFunc::pointer_type> methods) : name_(name), super_(super), methods_(methods) {}
+	StmtClass(Variable::pointer_type name, VariableExpression::pointer_type super, std::list<Variable::pointer_type> data, std::list<StmtFunc::pointer_type> methods) : name_(name), super_(super), data_(data), methods_(methods) {}
 
 	virtual void accept(StmtVisitor &v);
 };

@@ -22,7 +22,7 @@ private:
 	std::map<std::string, Token::pointer_type> fields_;
 
 public:	
-	BetaInstance(BetaClass * clas) : clas_(clas) {}
+	BetaInstance(BetaClass * clas, std::list<Variable::pointer_type> data);
 
 	Token::pointer_type get(std::string name);
 	void set(std::string name, Token::pointer_type val);

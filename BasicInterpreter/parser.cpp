@@ -73,15 +73,53 @@ Parser::stmt_p Parser::classStatement()
 	
 	consume<LeftBrace>("Expected '{' before class body.");
 
+	list<Variable::pointer_type> data;
 	list<StmtFunc::pointer_type> methods;
-	
-	// read methods until the end of the class
-	while (!is<RightBrace>(peek()))
-		methods.push_back(convert<StmtFunc>(funcStatement("method")));
+
+	if (check<Data>())
+	{
+		consume<Colon>("Expected colon after \"data\" keyword.");
+		// parse all variables
+		while (!is<RightBrace>(peek()) && !is<Method>(peek()))
+		{
+			consume<Let>("Class variables must start with 'let' identifier.");
+			consume<Variable>("Expected variable name");
+			data.push_back(convert<Variable>(previous()));
+			consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
+		}
+
+		if (check<Method>())
+		{
+			consume<Colon>("Expected colon after \"method\" keyword.");
+			// parse all methods
+			while (!is<RightBrace>(peek()))
+				methods.push_back(convert<StmtFunc>(funcStatement("method")));
+		}
+	}
+	else if (check<Method>())
+	{
+		consume<Colon>("Expected colon after \"method\" keyword.");
+		// parse all methods
+		while (!is<RightBrace>(peek()) && !is<Data>(peek()))
+			methods.push_back(convert<StmtFunc>(funcStatement("method")));
+
+		if (check<Data>())
+		{
+			consume<Colon>("Expected colon after \"data\" keyword.");
+			// parse all variables
+			while (!is<RightBrace>(peek()))
+			{
+				consume<Let>("Class variables must start with 'let' identifier.");
+				consume<Variable>("Expected variable name");
+				data.push_back(convert<Variable>(previous()));
+				consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
+			}
+		}
+	}
 		
 	consume<RightBrace>("Expected closing brace after class definition.");
 
-	return stmt_p(new StmtClass(name, super, methods));
+	return stmt_p(new StmtClass(name, super, data, methods));
 }
 
 /**
@@ -159,7 +197,7 @@ Parser::stmt_p Parser::funcStatement(std::string kind)
 {
 	Variable::pointer_type name = convert<Variable>(consume<Variable>("Expected " + kind + " name"));
 
-	consume<LeftBracket>("Expected '(' after function name");
+	consume<LeftBracket>("Expected '(' after " + kind + " name");
 	
 	list<Token::pointer_type> params;
 	if (!is<RightBracket>(peek()))
@@ -176,15 +214,15 @@ Parser::stmt_p Parser::funcStatement(std::string kind)
 		while (check<Comma>());
 	}
 
-	consume<RightBracket>("Expected ')' after function parameters");
-	consume<LeftBrace>("Expected '{' after function header");
+	consume<RightBracket>("Expected ')' after " + kind + " parameters");
+	consume<LeftBrace>("Expected '{' after " + kind + " header");
 	
 	stmt_list body;
 
 	while (!is<RightBrace>(peek()) && !isAtEnd())
 		body.push_back(statement());
 
-	consume<RightBrace>("Expected '}'");
+	consume<RightBrace>("Expected '}' after " + kind + ".");
 
 	return stmt_p(new StmtFunc(name, params, body));
 

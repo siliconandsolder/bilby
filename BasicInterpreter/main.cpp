@@ -10,7 +10,7 @@ int main()
 	try
 	{
 		Lexer lex;
-		TokenList tokens = lex.analyze("class doughnut { cook() { shout \"fry until brown\"; } } class boston inherits doughnut { cook() { super.cook(); shout \"pipe full of custard.\"; } } boston().cook();");
+		TokenList tokens = lex.analyze("class test {data: let a; methods: doSomething(){ shout me.a; }} let t = test(); t.a = 2; t.doSomething();");
 
 		Parser p(tokens);
 		Parser::stmt_list lst = p.parse();

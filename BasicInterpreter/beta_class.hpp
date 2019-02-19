@@ -25,9 +25,10 @@ public:
 	std::string name_;
 	BetaClass::pointer_type super_;
 private:
+	std::list<Variable::pointer_type> data_;
 	std::map<std::string, CustomFunction::pointer_type> methods_;
 public:
-	BetaClass(std::string name, BetaClass::pointer_type super, std::map<std::string, CustomFunction::pointer_type> methods) : name_(name), super_(super), methods_(methods) {}
+	BetaClass(std::string name, BetaClass::pointer_type super, std::list<Variable::pointer_type> data, std::map<std::string, CustomFunction::pointer_type> methods) : name_(name), super_(super), data_(data), methods_(methods) {}
 
 	virtual string_type toString() const { return name_; }
 	CustomFunction::pointer_type findMethod(std::shared_ptr<BetaInstance> instance, std::string name);

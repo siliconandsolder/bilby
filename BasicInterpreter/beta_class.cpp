@@ -53,7 +53,7 @@ unsigned short BetaClass::arity()
 */
 Token::pointer_type BetaClass::call(Interpreter * interpreter, std::list<Token::pointer_type> args)
 {
-	auto instance = BetaInstance::pointer_type(new BetaInstance(this));
+	auto instance = BetaInstance::pointer_type(new BetaInstance(this, data_));
 	
 	CustomFunction::pointer_type init = nullptr;
 

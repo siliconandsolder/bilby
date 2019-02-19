@@ -371,10 +371,15 @@ void Interpreter::visit(StmtClass * expr)
 
 	// stores each method, and whether or not it is the init() method
 	map<string, CustomFunction::pointer_type> methods;
+	list<Variable::pointer_type> data;
+
+	for (auto datum : expr->data_)
+		data.push_back(datum);
+
 	for (auto method : expr->methods_)
 		methods.insert(pair<string, CustomFunction::pointer_type>(method->ident_->getName(), CustomFunction::pointer_type(new CustomFunction(method, env_, method->ident_->getName() == "init"))));
 
-	BetaClass::pointer_type cla(new BetaClass(expr->name_->getName(), convert<BetaClass>(super), methods));
+	BetaClass::pointer_type cla(new BetaClass(expr->name_->getName(), convert<BetaClass>(super), data, methods));
 
 	// reset the environment if there is no super class (all methods are below the super instance)
 	if (super != nullptr)

@@ -90,3 +90,17 @@ public:
 	DEF_POINTER_TYPE(Super)
 	DEF_IS_CONVERTIBLE_FROM(Super)
 };
+
+class Data : public Keyword
+{
+public:
+	DEF_POINTER_TYPE(Data)
+	DEF_IS_CONVERTIBLE_FROM(Data)
+};
+
+class Method : public Keyword
+{
+public:
+	DEF_POINTER_TYPE(Method)
+	DEF_IS_CONVERTIBLE_FROM(Method)
+};

@@ -83,6 +83,14 @@ class MiscOperators : public Token {};
 			string_type toString() const { return ";"; }
 	};
 
+	class Colon : public MiscOperators
+	{
+	public:
+		DEF_POINTER_TYPE(Colon)
+		DEF_IS_CONVERTIBLE_FROM(Colon)
+		string_type toString() const { return ":"; }
+	};
+
 	class Comma : public MiscOperators
 	{
 	public:

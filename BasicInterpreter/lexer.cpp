@@ -48,6 +48,8 @@ Lexer::Lexer()
 	specialTokens_["me"] = make<Me>();
 	specialTokens_["inherits"] = make<Inherits>();
 	specialTokens_["super"] = make<Super>();
+	specialTokens_["data"] = make<Data>();
+	specialTokens_["methods"] = make<Method>();
 
 	// constants
 	specialTokens_["pi"] = make<Pi>();
@@ -198,6 +200,13 @@ TokenList Lexer::analyze(string_type const & expression)
 			if (*currentChar == ';')
 			{
 				tokens.push_back(make<SemiColon>());
+				++currentChar;
+				continue;
+			}
+
+			if (*currentChar == ':')
+			{
+				tokens.push_back(make<Colon>());
 				++currentChar;
 				continue;
 			}

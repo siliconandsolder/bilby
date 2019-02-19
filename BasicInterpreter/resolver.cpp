@@ -58,13 +58,21 @@ void Resolver::visit(StmtClass * expr)
 
 	define(expr->name_->getName());
 
+	// add the super class to scope if there is one
 	if (expr->super_ != nullptr)
 	{
 		beginScope();
 		scopes_.back().insert(pair<string, bool>("super", true));
 	}
 
+	// method and variable scope
 	beginScope();
+	for (auto datum : expr->data_)
+	{
+		declare(datum->getName());
+		define(datum->getName());
+	}
+
 	scopes_.back().insert(pair<string, bool>("me", true));
 	
 	for (auto method : expr->methods_)

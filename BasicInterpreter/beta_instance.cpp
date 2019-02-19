@@ -9,6 +9,15 @@
 #include "beta_instance.hpp"
 using namespace std;
 
+BetaInstance::BetaInstance(BetaClass * clas, std::list<Variable::pointer_type> data)
+{
+	clas_ = clas;
+
+	// add class variables to the instance
+	for (auto datum : data)
+		fields_.insert(pair<string, Token::pointer_type>(datum->getName(), nullptr));
+}
+
 /**
 @name:		get
 @purpose:	returns a pointer to a field, if it exists
@@ -36,8 +45,8 @@ Token::pointer_type BetaInstance::get(std::string name)
 */
 void BetaInstance::set(std::string name, Token::pointer_type val)
 {
-	if (fields_.count(name) == 0)
-		fields_.insert(std::pair<string, Token::pointer_type>(name, val));
-	else
+	if (fields_.count(name) == 1)
 		fields_.at(name) = val;
+	else
+		throw exception(string("Field \"" + name + "\" does not exist in class \"" + clas_->name_ + "\"").c_str());
 }
