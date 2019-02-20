@@ -48,7 +48,7 @@ Parser::stmt_p Parser::statement()
 	else if (check<Do>()) return doWhileStatement();
 	else if (check<Print>()) return printStatement();
 	else if (check<Return>()) return retStatement();
-	else if (check<Let>()) return varDeclaration();
+	else if (check<Var>()) return varDeclaration();
 	else if (check<LeftBrace>()) return block();
 
 	return expStatement();
@@ -82,7 +82,7 @@ Parser::stmt_p Parser::classStatement()
 		// parse all variables
 		while (!is<RightBrace>(peek()) && !is<Method>(peek()))
 		{
-			consume<Let>("Class variables must start with 'let' identifier.");
+			consume<Var>("Class variables must start with 'let' identifier.");
 			consume<Variable>("Expected variable name");
 			data.push_back(convert<Variable>(previous()));
 			consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
@@ -109,7 +109,7 @@ Parser::stmt_p Parser::classStatement()
 			// parse all variables
 			while (!is<RightBrace>(peek()))
 			{
-				consume<Let>("Class variables must start with 'let' identifier.");
+				consume<Var>("Class variables must start with 'let' identifier.");
 				consume<Variable>("Expected variable name");
 				data.push_back(convert<Variable>(previous()));
 				consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
@@ -176,8 +176,22 @@ Parser::stmt_p Parser::expStatement()
 */
 Parser::stmt_p Parser::varDeclaration()
 {
-	Token::pointer_type var = consume<Variable>("Expected a variable name.");
+	Var::pointer_type type = convert<Var>(previous());
+
+	Variable::pointer_type var = convert<Variable>(consume<Variable>("Expected a variable name."));
 	
+	// set the variable type
+	if (is<VarBool>(type))
+		var->setType(Variable::VarType::BOOL);
+	else if (is<VarInt>(type))
+		var->setType(Variable::VarType::INT);
+	else if (is<VarFloat>(type))
+		var->setType(Variable::VarType::FLOAT);
+	else if (is<VarWord>(type))
+		var->setType(Variable::VarType::WORD);
+	else
+		var->setType(Variable::VarType::OBJECT);
+
 	expr_p init;
 	if (check<Assignment>())
 		init = expression();
@@ -207,7 +221,7 @@ Parser::stmt_p Parser::funcStatement(std::string kind)
 			if (params.size() == 8)
 				throw ParserException("Cannot have more than 8 paramaters.");
 
-			consume<Let>("Parameters must start with 'let' identifier.");
+			consume<Var>("Parameters must start with 'let' identifier.");
 
 			params.push_back(consume<Variable>("Expected paramater name."));
 		}
@@ -313,7 +327,7 @@ Parser::stmt_p Parser::forStatement()
 	stmt_p init;
 	if (is<SemiColon>(peek()))
 		init = nullptr;
-	else if (is<Let>(peek()))
+	else if (is<Var>(peek()))
 		init = varDeclaration();
 	else
 		init = expStatement();

@@ -43,6 +43,9 @@ Token::pointer_type CustomFunction::call(Interpreter * interpreter, std::list<To
 	// add parameters to the environment
 	while (itArgs != args.end())
 	{
+		if (!interpreter->checkType(convert<Variable>(*itParams)->getType(), (*itArgs)))
+			throw Interpreter::InterpreterException(string("InterpreterException: Cannot assign \"" + (*itArgs)->toString() + "\" to a " + interpreter->VarTypeName(convert<Variable>(*itParams)->getType())).c_str());
+		
 		env->define((*itParams)->toString(),(*itArgs));
 		++itParams;
 		++itArgs;

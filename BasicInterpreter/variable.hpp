@@ -15,15 +15,18 @@ class Variable : public Operand
 public:
 	DEF_POINTER_TYPE(Variable)
 	using value_type = string_type;
+	enum class VarType { BOOL, INT, FLOAT, WORD, OBJECT };
 private:
 	value_type name_;
+	VarType varType_;
 public:
 	Variable(value_type value = "") : name_(value) {}
 	
 	void setName(string_type name) { name_ = name; }
 	string_type getName() const { return name_; }
-
 	value_type getValue() const { return name_; }
+	void setType(VarType type) { varType_ = type; }
+	VarType getType() { return varType_; }
 	
 	string_type toString() const;
 	DEF_IS_CONVERTIBLE_FROM(Variable)

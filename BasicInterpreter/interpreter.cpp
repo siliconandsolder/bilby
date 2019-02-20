@@ -32,6 +32,45 @@ Interpreter::Interpreter()
 }
 
 /**
+@name:		VarTypeName
+@purpose:	returns the variable type as a string
+@param:		Variable::VarType
+@return:	std::string
+*/
+std::string Interpreter::VarTypeName(Variable::VarType type)
+{
+	if (type == Variable::VarType::BOOL)
+		return "bool";
+	else if (type == Variable::VarType::INT)
+		return "int";
+	else if (type == Variable::VarType::FLOAT)
+		return "float";
+	else if (type == Variable::VarType::WORD)
+		return "word";
+	else
+		return "object";
+
+}
+
+/**
+@name:		checkType
+@purpose:	ensures the variable and the value being assigned to it are the same type
+@param:		Variable::VarType, Token::pointer_type
+@return:	bool
+*/
+bool Interpreter::checkType(Variable::VarType type, Token::pointer_type val)
+{
+	if ((type == Variable::VarType::BOOL && is<Boolean>(val)) ||
+		(type == Variable::VarType::INT && is<Integer>(val)) ||
+		(type == Variable::VarType::FLOAT && is<Float>(val)) ||
+		(type == Variable::VarType::WORD && is<Word>(val)) ||
+		type == Variable::VarType::OBJECT && is<BetaInstance>(val))
+		return true;
+
+	return false;
+}
+
+/**
 @name:		visit
 @purpose:	reassigns a variable in an Assignment Expression
 @param:		AssignExpression *
@@ -40,6 +79,11 @@ Interpreter::Interpreter()
 Token::pointer_type Interpreter::visit(AssignExpression * expr)
 {
 	tok_type val = evaluate(expr->expr_);
+	Variable::VarType type = expr->oper_->getType();
+
+	if (!checkType(type, val))
+		throw InterpreterException(string("InterpreterException: Cannot assign \"" + val->toString() + "\" to a " + VarTypeName(type)).c_str());
+
 	//env_->reassign(expr->oper_->getName(), val);
 	auto itVar = locals_.find(expr);
 	if (itVar != locals_.end())
@@ -323,8 +367,14 @@ void Interpreter::visit(StmtVariable * expr)
 {
 	tok_type tok;
 	if (expr->expr_ != nullptr)
+	{
 		tok = evaluate(expr->expr_);
+		Variable::VarType type = expr->var_->getType();
 
+		if (!checkType(type, tok))
+			throw InterpreterException(string("InterpreterException: Cannot assign \"" + tok->toString() + "\" to a " + VarTypeName(type)).c_str());
+	}
+		
 	env_->define(expr->var_->getName(), tok);
 }
 

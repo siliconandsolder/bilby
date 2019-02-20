@@ -16,10 +16,47 @@ public:
 	DEF_IS_CONVERTIBLE_FROM(Keyword)
 };
 
-class Let : public Keyword
+class Var : public Keyword
 {
-	DEF_IS_CONVERTIBLE_FROM(Let)
+public:
+	DEF_POINTER_TYPE(Var)
+	DEF_IS_CONVERTIBLE_FROM(Var)
 };
+
+	class VarBool : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarBool)
+		DEF_IS_CONVERTIBLE_FROM(VarBool)
+	};
+
+	class VarInt : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarInt)
+		DEF_IS_CONVERTIBLE_FROM(VarInt)
+	};
+
+	class VarFloat : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarFloat)
+		DEF_IS_CONVERTIBLE_FROM(VarFloat)
+	};
+
+	class VarWord : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarWord)
+		DEF_IS_CONVERTIBLE_FROM(VarWord)
+	};
+
+	class VarObject : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarObject)
+		DEF_IS_CONVERTIBLE_FROM(VarObject)
+	};
 
 class Print : public Keyword
 {

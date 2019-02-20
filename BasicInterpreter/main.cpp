@@ -10,7 +10,7 @@ int main()
 	try
 	{
 		Lexer lex;
-		TokenList tokens = lex.analyze("class test {data: let a; methods: doSomething(){ shout me.a; }} let t = test(); t.a = 2; t.doSomething();");
+		TokenList tokens = lex.analyze("int a = 2; shout a;");
 
 		Parser p(tokens);
 		Parser::stmt_list lst = p.parse();

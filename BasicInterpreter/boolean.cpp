@@ -8,6 +8,8 @@
 
 #include "boolean.hpp"
 #include <boost/lexical_cast.hpp>
+#include <sstream>
+using namespace std;
 
 /**
 @name:		toString
@@ -17,5 +19,7 @@
 */
 Boolean::string_type Boolean::toString() const
 {
-	return boost::lexical_cast<string_type>(getValue());
+	ostringstream oss;
+	oss << std::boolalpha << value_;
+	return oss.str();
 }

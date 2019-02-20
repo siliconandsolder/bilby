@@ -35,7 +35,6 @@ using namespace std;
 Lexer::Lexer()
 {
 	// keywords
-	specialTokens_["let"] = make<Let>();
 	specialTokens_["shout"] = make<Print>();
 	specialTokens_["if"] = make<If>();
 	specialTokens_["else"] = make<Else>();
@@ -50,6 +49,13 @@ Lexer::Lexer()
 	specialTokens_["super"] = make<Super>();
 	specialTokens_["data"] = make<Data>();
 	specialTokens_["methods"] = make<Method>();
+
+	// data types
+	specialTokens_["bool"] = make<VarBool>();
+	specialTokens_["int"] = make<VarInt>();
+	specialTokens_["float"] = make<VarFloat>();
+	specialTokens_["word"] = make<VarWord>();
+	specialTokens_["object"] = make<VarObject>();
 
 	// constants
 	specialTokens_["pi"] = make<Pi>();
