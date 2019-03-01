@@ -50,12 +50,14 @@ private:
 	stmt_p retStatement();
 	stmt_p expStatement();
 	stmt_p varDeclaration();
-	stmt_p funcStatement(std::string kind);
+	stmt_p funcStatement(std::string kind, Variable::pointer_type name);
 	stmt_p block();
 	stmt_p ifStatement();
 	stmt_p whileStatement();
 	stmt_p doWhileStatement();
 	stmt_p forStatement();
+
+	VarType assignVarType(Token::pointer_type tok);
 
 	// expression code
 	expr_p expression();

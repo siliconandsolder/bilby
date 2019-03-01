@@ -10,12 +10,13 @@
 
 #include "operand.hpp"
 
+enum class VarType { BOOL, NUMBER, INT, FLOAT, WORD, OBJECT, VOID };
+
 class Variable : public Operand
 {
 public:
 	DEF_POINTER_TYPE(Variable)
 	using value_type = string_type;
-	enum class VarType { BOOL, INT, FLOAT, WORD, OBJECT };
 private:
 	value_type name_;
 	VarType varType_;

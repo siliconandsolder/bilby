@@ -66,8 +66,8 @@ private:
 	tok_type evaluate(expr_type expr);
 	void execute(stmt_p stmt);
 	Token::pointer_type lookUpVariable(std::string name, Expression * expr);
-	std::string VarTypeName(Variable::VarType type);
-	bool checkType(Variable::VarType type, Token::pointer_type val);
+	std::string VarTypeName(VarType type);
+	bool checkType(VarType type, Token::pointer_type val);
 
 	friend class CustomFunction;
 };

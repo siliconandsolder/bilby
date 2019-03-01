@@ -57,6 +57,7 @@ public:
 	DEF_IS_CONVERTIBLE_FROM(StmtFunc)
 public:
 	Variable::pointer_type ident_;
+	VarType retType_;
 	std::list<Token::pointer_type> params_;
 	std::list<Statement::pointer_type> body_;
 public:

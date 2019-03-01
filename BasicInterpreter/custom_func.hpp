@@ -15,6 +15,7 @@ class CustomFunction : public BetaCallable
 private:
 	std::shared_ptr<StmtFunc> declaration_;
 	std::shared_ptr<Environment> closure_;
+	VarType retType_;
 	bool isInit_;
 public:
 	DEF_POINTER_TYPE(CustomFunction)

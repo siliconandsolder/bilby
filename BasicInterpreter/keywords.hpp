@@ -30,19 +30,26 @@ public:
 		DEF_IS_CONVERTIBLE_FROM(VarBool)
 	};
 
-	class VarInt : public Var
+	class VarNumber : public Var
 	{
 	public:
-		DEF_POINTER_TYPE(VarInt)
-		DEF_IS_CONVERTIBLE_FROM(VarInt)
+		DEF_POINTER_TYPE(VarNumber)
+		DEF_IS_CONVERTIBLE_FROM(VarNumber)
 	};
 
-	class VarFloat : public Var
-	{
-	public:
-		DEF_POINTER_TYPE(VarFloat)
-		DEF_IS_CONVERTIBLE_FROM(VarFloat)
-	};
+		class VarInt : public VarNumber
+		{
+		public:
+			DEF_POINTER_TYPE(VarInt)
+			DEF_IS_CONVERTIBLE_FROM(VarInt)
+		};
+
+		class VarFloat : public VarNumber
+		{
+		public:
+			DEF_POINTER_TYPE(VarFloat)
+			DEF_IS_CONVERTIBLE_FROM(VarFloat)
+		};
 
 	class VarWord : public Var
 	{
@@ -56,6 +63,13 @@ public:
 	public:
 		DEF_POINTER_TYPE(VarObject)
 		DEF_IS_CONVERTIBLE_FROM(VarObject)
+	};
+
+	class VarVoid : public Var
+	{
+	public:
+		DEF_POINTER_TYPE(VarVoid)
+		DEF_IS_CONVERTIBLE_FROM(VarVoid)
 	};
 
 class Print : public Keyword

@@ -11,6 +11,7 @@
 #include "operator.hpp"
 #include "keywords.hpp"
 #include "integer.hpp"
+#include "float.hpp"
 #include "boolean.hpp"
 #include "word.hpp"
 #include <stack>
@@ -42,7 +43,7 @@ Parser::stmt_p Parser::statement()
 {
 	if (check<If>()) return ifStatement();
 	else if (check<Class>()) return classStatement();
-	else if (check<Func>()) return funcStatement("function");
+	//else if (check<Func>()) return funcStatement("function");
 	else if (check<For>()) return forStatement();
 	else if (check<While>()) return whileStatement();
 	else if (check<Do>()) return doWhileStatement();
@@ -82,9 +83,12 @@ Parser::stmt_p Parser::classStatement()
 		// parse all variables
 		while (!is<RightBrace>(peek()) && !is<Method>(peek()))
 		{
-			consume<Var>("Class variables must start with 'let' identifier.");
-			consume<Variable>("Expected variable name");
-			data.push_back(convert<Variable>(previous()));
+			VarType type = assignVarType(consume<Var>("Class variables must start with an identifier."));
+			
+			Variable::pointer_type var = convert<Variable>(consume<Variable>("Expected variable name"));
+			var->setType(type);
+			data.push_back(var);
+			
 			consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
 		}
 
@@ -93,7 +97,10 @@ Parser::stmt_p Parser::classStatement()
 			consume<Colon>("Expected colon after \"method\" keyword.");
 			// parse all methods
 			while (!is<RightBrace>(peek()))
-				methods.push_back(convert<StmtFunc>(funcStatement("method")));
+			{
+				advance();
+				methods.push_back(convert<StmtFunc>(varDeclaration()));
+			}
 		}
 	}
 	else if (check<Method>())
@@ -101,7 +108,10 @@ Parser::stmt_p Parser::classStatement()
 		consume<Colon>("Expected colon after \"method\" keyword.");
 		// parse all methods
 		while (!is<RightBrace>(peek()) && !is<Data>(peek()))
-			methods.push_back(convert<StmtFunc>(funcStatement("method")));
+		{
+			advance();
+			methods.push_back(convert<StmtFunc>(varDeclaration()));
+		}
 
 		if (check<Data>())
 		{
@@ -109,9 +119,12 @@ Parser::stmt_p Parser::classStatement()
 			// parse all variables
 			while (!is<RightBrace>(peek()))
 			{
-				consume<Var>("Class variables must start with 'let' identifier.");
-				consume<Variable>("Expected variable name");
-				data.push_back(convert<Variable>(previous()));
+				VarType type = assignVarType(consume<Var>("Class variables must start with an identifier."));
+
+				Variable::pointer_type var = convert<Variable>(consume<Variable>("Expected variable name"));
+				var->setType(type);
+				data.push_back(var);
+
 				consume<SemiColon>("Expected semicolon after variable " + data.back()->getName() + " declaration.");
 			}
 		}
@@ -178,19 +191,27 @@ Parser::stmt_p Parser::varDeclaration()
 {
 	Var::pointer_type type = convert<Var>(previous());
 
-	Variable::pointer_type var = convert<Variable>(consume<Variable>("Expected a variable name."));
+	Variable::pointer_type var = convert<Variable>(consume<Variable>("Expected a name after type declaration."));
 	
 	// set the variable type
 	if (is<VarBool>(type))
-		var->setType(Variable::VarType::BOOL);
-	else if (is<VarInt>(type))
-		var->setType(Variable::VarType::INT);
-	else if (is<VarFloat>(type))
-		var->setType(Variable::VarType::FLOAT);
+		var->setType(VarType::BOOL);
+	else if (is<VarInt>(type) || is<VarFloat>(type))
+		var->setType(VarType::NUMBER);
 	else if (is<VarWord>(type))
-		var->setType(Variable::VarType::WORD);
-	else
-		var->setType(Variable::VarType::OBJECT);
+		var->setType(VarType::WORD);
+	else if (is<VarObject>(type))
+		var->setType(VarType::OBJECT);
+	else if (is<VarVoid>(type))	// assumed to be a function/method
+		var->setType(VarType::VOID);
+
+	// this is a function
+	if (is<LeftBracket>(peek()))
+		return funcStatement("function", var);
+	
+	// tried to assign void to a variable
+	if (is<VarVoid>(type))
+		throw ParserException(string("\"void\" is only available for functions and methods."));
 
 	expr_p init;
 	if (check<Assignment>())
@@ -202,14 +223,34 @@ Parser::stmt_p Parser::varDeclaration()
 }
 
 /**
+@name:		assignType
+@purpose:	Assigns a type to variables
+@param:		Token::pointer_type
+@return:	Variable::VarType
+*/
+VarType Parser::assignVarType(Token::pointer_type tok)
+{
+	if (is<VarNumber>(tok))
+		return VarType::NUMBER;
+	else if (is<VarBool>(tok))
+		return VarType::BOOL;
+	else if (is<VarObject>(tok))
+		return VarType::OBJECT;
+	else if (is<VarWord>(tok))
+		return VarType::WORD;
+	else
+		throw ParserException(string("\"void\" is only available for functions and methods."));
+}
+
+/**
 @name:		funcStatement
 @purpose:	creates a new function statement with a name, parameters, and a block statement
 @param:		null
 @return:	Parser::stmt_p
 */
-Parser::stmt_p Parser::funcStatement(std::string kind)
+Parser::stmt_p Parser::funcStatement(std::string kind, Variable::pointer_type name)
 {
-	Variable::pointer_type name = convert<Variable>(consume<Variable>("Expected " + kind + " name"));
+	//Variable::pointer_type name = convert<Variable>(consume<Variable>("Expected " + kind + " name"));
 
 	consume<LeftBracket>("Expected '(' after " + kind + " name");
 	
@@ -221,9 +262,12 @@ Parser::stmt_p Parser::funcStatement(std::string kind)
 			if (params.size() == 8)
 				throw ParserException("Cannot have more than 8 paramaters.");
 
-			consume<Var>("Parameters must start with 'let' identifier.");
+			VarType type = assignVarType(consume<Var>("Parameters must start with an identifier."));
+			
+			Token::pointer_type param = consume<Variable>("Expected paramater name.");
+			convert<Variable>(param)->setType(type);
 
-			params.push_back(consume<Variable>("Expected paramater name."));
+			params.push_back(param);
 		}
 		while (check<Comma>());
 	}

@@ -60,8 +60,12 @@ Token::pointer_type CustomFunction::call(Interpreter * interpreter, std::list<To
 		interpreter->env_ = prevEnv;	// reset the environment in case of a return keyword
 
 		// return a pointer to this instance if it is the init() function
-		if (isInit_) 
+		if (isInit_ && re.value_ == nullptr)
 			return closure_->getAt(0, "me");
+
+		// returned expression did not match the expected return type
+		if (!interpreter->checkType(declaration_->ident_->getType(), re.value_))
+			throw Interpreter::InterpreterException(string("InterpreterException: Cannot return \"" + re.value_->toString() + "\" when expected type is " + interpreter->VarTypeName(declaration_->ident_->getType())).c_str());
 
 		return re.value_;
 	}

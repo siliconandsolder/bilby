@@ -37,18 +37,20 @@ Interpreter::Interpreter()
 @param:		Variable::VarType
 @return:	std::string
 */
-std::string Interpreter::VarTypeName(Variable::VarType type)
+std::string Interpreter::VarTypeName(VarType type)
 {
-	if (type == Variable::VarType::BOOL)
+	if (type == VarType::BOOL)
 		return "bool";
-	else if (type == Variable::VarType::INT)
+	else if (type == VarType::INT)
 		return "int";
-	else if (type == Variable::VarType::FLOAT)
+	else if (type == VarType::FLOAT)
 		return "float";
-	else if (type == Variable::VarType::WORD)
+	else if (type == VarType::WORD)
 		return "word";
-	else
+	else if (type == VarType::OBJECT)
 		return "object";
+	else
+		return "void";
 
 }
 
@@ -58,13 +60,13 @@ std::string Interpreter::VarTypeName(Variable::VarType type)
 @param:		Variable::VarType, Token::pointer_type
 @return:	bool
 */
-bool Interpreter::checkType(Variable::VarType type, Token::pointer_type val)
+bool Interpreter::checkType(VarType type, Token::pointer_type val)
 {
-	if ((type == Variable::VarType::BOOL && is<Boolean>(val)) ||
-		(type == Variable::VarType::INT && is<Integer>(val)) ||
-		(type == Variable::VarType::FLOAT && is<Float>(val)) ||
-		(type == Variable::VarType::WORD && is<Word>(val)) ||
-		type == Variable::VarType::OBJECT && is<BetaInstance>(val))
+	if ((type == VarType::BOOL && is<Boolean>(val)) ||
+		(type == VarType::NUMBER && (is<Number>(val))) ||
+		(type == VarType::WORD && is<Word>(val)) ||
+		type == VarType::OBJECT && is<BetaInstance>(val) ||
+		type == VarType::VOID && !val)
 		return true;
 
 	return false;
@@ -79,7 +81,7 @@ bool Interpreter::checkType(Variable::VarType type, Token::pointer_type val)
 Token::pointer_type Interpreter::visit(AssignExpression * expr)
 {
 	tok_type val = evaluate(expr->expr_);
-	Variable::VarType type = expr->oper_->getType();
+	VarType type = expr->oper_->getType();
 
 	if (!checkType(type, val))
 		throw InterpreterException(string("InterpreterException: Cannot assign \"" + val->toString() + "\" to a " + VarTypeName(type)).c_str());
@@ -352,7 +354,8 @@ void Interpreter::visit(StmtPrint * expr)
 void Interpreter::visit(StmtReturn * expr)
 {
 	tok_type val = nullptr;
-	if (expr->expr_ != nullptr) val = evaluate(expr->expr_);
+	if (expr->expr_ != nullptr) 
+		val = evaluate(expr->expr_);
 
 	throw ReturnEx(val);
 }
@@ -369,7 +372,7 @@ void Interpreter::visit(StmtVariable * expr)
 	if (expr->expr_ != nullptr)
 	{
 		tok = evaluate(expr->expr_);
-		Variable::VarType type = expr->var_->getType();
+		VarType type = expr->var_->getType();
 
 		if (!checkType(type, tok))
 			throw InterpreterException(string("InterpreterException: Cannot assign \"" + tok->toString() + "\" to a " + VarTypeName(type)).c_str());

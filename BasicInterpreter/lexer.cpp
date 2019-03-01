@@ -57,6 +57,9 @@ Lexer::Lexer()
 	specialTokens_["word"] = make<VarWord>();
 	specialTokens_["object"] = make<VarObject>();
 
+	// function-only type
+	specialTokens_["void"] = make<VarVoid>();
+
 	// constants
 	specialTokens_["pi"] = make<Pi>();
 	specialTokens_["e"] = make<E>();
