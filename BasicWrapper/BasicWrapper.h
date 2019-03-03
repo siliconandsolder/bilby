@@ -6,6 +6,17 @@ namespace BasicWrapper
 {
 	public ref class Wrapper
 	{
-		// TODO: Add your methods for this class here.
+	private:
+		String ^program_;
+	public:
+		Wrapper(String ^program)
+		{
+			this->program_ = program;
+		}
+		
+		void Execute()
+		{
+
+		}
 	};
 }
