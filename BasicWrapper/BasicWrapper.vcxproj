@@ -153,6 +153,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BasicInterpreter\BasicInterpreter.vcxproj">
+      <Project>{1ed8dbee-5aed-419e-80fc-99e7c2d03163}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
