@@ -1,4 +1,5 @@
 #pragma once
+#include "../BasicInterpreter/entry.hpp"
 
 using namespace System;
 
@@ -6,17 +7,8 @@ namespace BasicWrapper
 {
 	public ref class Wrapper
 	{
-	private:
-		String ^program_;
 	public:
-		Wrapper(String ^program)
-		{
-			this->program_ = program;
-		}
-		
-		void Execute()
-		{
-
-		}
+		static void Execute(String^ program);
+		static void SetConsoleHandle(IntPtr handle);
 	};
 }

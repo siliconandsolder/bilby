@@ -66,7 +66,7 @@ bool Interpreter::checkType(VarType type, Token::pointer_type val)
 		(type == VarType::NUMBER && (is<Number>(val))) ||
 		(type == VarType::WORD && is<Word>(val)) ||
 		type == VarType::OBJECT && is<BetaInstance>(val) ||
-		type == VarType::VOID && !val)
+		type == VarType::VOID_TYPE && !val)
 		return true;
 
 	return false;
@@ -608,7 +608,7 @@ void Interpreter::executeBlock(stmt_list statements, std::shared_ptr<Environment
 
 /**
 @name:		resolve
-@purpose:	Inserts an expression tied to a variable, and how many scopes the variable is above said expression
+@purpose:	Inserts an expression tied to a variable, and how many scopes the variable declaration is above said expression
 @param:		Expression *, unsigned
 @return:	void
 */

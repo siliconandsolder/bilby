@@ -70,4 +70,5 @@ private:
 	bool checkType(VarType type, Token::pointer_type val);
 
 	friend class CustomFunction;
+	friend class Resolver;
 };

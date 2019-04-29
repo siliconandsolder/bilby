@@ -30,7 +30,7 @@ private:
 	Interpreter * interpreter_;
 
 public:
-	Resolver(Interpreter * interpreter) : interpreter_(interpreter), curFunc_(FuncType::NONE), curClass_(ClassType::NONE) {}
+	Resolver(Interpreter * interpreter);
 
 private:
 	void resolve(Statement::pointer_type statement);

@@ -24,4 +24,6 @@ public:
 	Token::pointer_type get(std::string name);
 	Token::pointer_type getAt(unsigned dist, std::string name);
 	std::shared_ptr<Environment> ancestor(unsigned dist);
+
+	friend class Resolver;
 };

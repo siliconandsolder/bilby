@@ -1,29 +1,27 @@
-#include "parser.hpp"
-#include "lexer.hpp"
-#include "interpreter.hpp"
-#include "resolver.hpp"
 #include <iostream>
+#include "lexer.hpp"
+#include "parser.hpp"
+#include "resolver.hpp"
+#include "interpreter.hpp"
+
 using namespace std;
 
 int main()
-{	
+{
 	try
 	{
 		Lexer lex;
-		TokenList tokens = lex.analyze("class testclass {data: int ab; methods: object init() { me.ab = 2; return; } int tester(int a) { return me.ab + a; } void shouter() { shout \"hello!\"; }} object t = testclass(); int d = t.tester(2); shout d; t.shouter();");
+		TokenList list = lex.analyze("float x = abs(-1); shout x;");
+		Parser parse(list);
+		Parser::stmt_list stmts = parse.parse();
 
-		Parser p(tokens);
-		Parser::stmt_list lst = p.parse();
-
-		Interpreter it;
-		
-		Resolver res(&it);
-		res.resolve(lst);
-
-		it.interpret(lst);
+		Interpreter interpreter;
+		Resolver resolver(&interpreter);
+		resolver.resolve(stmts);
+		interpreter.interpret(stmts);
 	}
-	catch (exception &e)
+	catch (exception& ex)
 	{
-		cout << e.what() << endl;
+		cerr << ex.what() << endl;
 	}
 }

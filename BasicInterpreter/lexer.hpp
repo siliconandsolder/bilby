@@ -43,6 +43,9 @@ private:
 	dictionary_type specialTokens_;
 	dictionary_type variables_;
 
+	unsigned short curLine_;
+	unsigned short curIndent_;
+
 public:
 	Lexer();
 	TokenList analyze(string_type const& expression);

@@ -22,19 +22,39 @@
 	}
 
 class Token {
+protected:
+	unsigned short lineNum_;
+	unsigned short indentNum_;
 public:
 	DEF_POINTER_TYPE(Token)
 	using string_type = std::string;
 
 	virtual string_type toString() const;
+
+	unsigned short getLineNumber() { return lineNum_; }
+	unsigned short getIndentNumber() { return indentNum_; }
+	void setLineNumber(unsigned short line) { lineNum_ = line; }
+	void setIndentNumber(unsigned short indent) { indentNum_ = indent; }
 	DEF_IS_CONVERTIBLE_FROM(Token)
 };
 
 using TokenList = std::vector<Token::pointer_type>;
 
-template <typename T> Token::pointer_type make() { return Token::pointer_type(new T); }
+template <typename T> Token::pointer_type make(unsigned short line = 1, unsigned short indent = 1) 
+{ 
+	Token::pointer_type newTok(Token::pointer_type(new T));
+	newTok->setLineNumber(line);
+	newTok->setIndentNumber(indent);
+	return newTok; 
+}
 
-template <typename T, typename U> Token::pointer_type make(U const& param) { return Token::pointer_type(new T(param)); }
+template <typename T, typename U> Token::pointer_type make(U const& param, unsigned short line = 1, unsigned short indent = 1)
+{ 
+	Token::pointer_type newTok(Token::pointer_type(new T(param)));
+	newTok->setLineNumber(line);
+	newTok->setIndentNumber(indent);
+	return newTok;
+}
 
 inline bool operator==(Token::pointer_type const& lhs, Token::pointer_type const& rhs) 
 {

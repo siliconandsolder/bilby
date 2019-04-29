@@ -10,7 +10,17 @@
 
 #include "operand.hpp"
 
-enum class VarType { BOOL, NUMBER, INT, FLOAT, WORD, OBJECT, VOID };
+enum class VarType { 
+	BOOL, 
+	NUMBER, 
+	INT, 
+	FLOAT, 
+	WORD, 
+	OBJECT, 
+	VOID_TYPE, 
+	NUM_VALUES, 
+	FIRST_VALUE = BOOL,
+	LAST_VALUE = NUM_VALUES - 1 };
 
 class Variable : public Operand
 {

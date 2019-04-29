@@ -141,6 +141,19 @@ void Resolver::resolve(std::list<Statement::pointer_type> statements)
 		resolve(statement);
 }
 
+Resolver::Resolver(Interpreter * interpreter)
+{
+	interpreter_ = interpreter;
+	curFunc_ = FuncType::NONE;
+	curClass_ = ClassType::NONE;
+	
+	// superglobal scope
+	beginScope();
+	
+	for (auto global : interpreter->globals_->variables_)
+		scopes_.back().insert(pair<string, bool>(global.first, global.second));
+}
+
 /**
 @name:		resolve
 @purpose:	resolves a single statement
@@ -220,19 +233,26 @@ void Resolver::define(std::string name)
 
 /**
 @name:		resolveLocal
-@purpose:	inserts a variable into the interpreter's memory, as well as the relative scope in which it is found
+@purpose:	inserts a reference to a declared variable into the interpreter's memory, as well as the relative scope in which 
+			the declaration was made.
 @param:		Expression *, std::string
 @return:	void
 */
 void Resolver::resolveLocal(Expression * expr, std::string name)
 {
 	for (int i = scopes_.size() - 1; i >= 0; --i)
+	{
 		if (scopes_.at(i).count(name) == 1)
 		{
 			interpreter_->resolve(expr, scopes_.size() - 1 - i);
 			return;
 		}
-			
+	}
+
+	stringstream ss;
+	ss << "ResolverException: Variable \"" << name << "\" does not exist anywhere in memory.";
+	throw ResolverException(ss.str());
+
 }
 
 /**

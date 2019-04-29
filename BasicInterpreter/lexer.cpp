@@ -34,6 +34,9 @@ using namespace std;
 */
 Lexer::Lexer()
 {
+	curLine_ = 1;
+	curIndent_ = 0;
+
 	// keywords
 	specialTokens_["shout"] = make<Print>();
 	specialTokens_["if"] = make<If>();
@@ -91,20 +94,36 @@ TokenList Lexer::analyze(string_type const & expression)
 
 	for (;;)
 	{
-		while (currentChar != end(expression) && (isspace(*currentChar) || *currentChar == '\n' || *currentChar == '\r'))
+		while (currentChar != end(expression) && (isspace(*currentChar)))
+		{
 			++currentChar;
+			++curIndent_;
+		}
+
+		if ((currentChar != end(expression) && (*currentChar == '\n' || *currentChar == '\r')))
+			curIndent_ = 1;
+			
+		while ((currentChar != end(expression) && (*currentChar == '\n' || *currentChar == '\r')))
+		{
+			++currentChar;
+			++curLine_;
+		}
 
 		if (currentChar == end(expression)) break;
 
 		if (isdigit(*currentChar))
 		{
+			auto currentCharCopy = currentChar;
 			tokens.push_back(getNumber(currentChar, expression));
+			curIndent_ += distance(currentCharCopy, currentChar);
 			continue;
 		}
 
 		if (isalpha(*currentChar))
 		{
+			auto currentCharCopy = currentChar;
 			tokens.push_back(getIdentifier(currentChar, expression));
+			curIndent_ += distance(currentCharCopy, currentChar);
 			continue;
 		}
 
@@ -145,6 +164,7 @@ TokenList Lexer::analyze(string_type const & expression)
 					tokens.push_back(make<Assignment>());
 				}
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -156,10 +176,14 @@ TokenList Lexer::analyze(string_type const & expression)
 					{
 						tokens.push_back(make<And>());
 						++currentChar;
+						++curIndent_;
 						continue;
 					}
 					else
+					{
 						--currentChar;
+						--curIndent_;
+					}
 				}
 			}
 
@@ -171,10 +195,14 @@ TokenList Lexer::analyze(string_type const & expression)
 					{
 						tokens.push_back(make<Or>());
 						++currentChar;
+						++curIndent_;
 						continue;
 					}
 					else
+					{
 						--currentChar;
+						--curIndent_;
+					}
 				}
 			}
 
@@ -182,6 +210,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<LeftBracket>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -189,6 +218,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<RightBracket>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -196,6 +226,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<LeftBrace>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -203,6 +234,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<RightBrace>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -210,6 +242,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<SemiColon>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -217,6 +250,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Colon>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -224,6 +258,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Comma>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -231,6 +266,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Dot>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -238,6 +274,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Multiplication>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -245,6 +282,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Division>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -252,6 +290,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Factorial>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -259,6 +298,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Power>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -266,6 +306,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Greater>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -273,6 +314,7 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				tokens.push_back(make<Less>());
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -282,6 +324,7 @@ TokenList Lexer::analyze(string_type const & expression)
 					tokens.push_back(make<ArgSeparator>());
 
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -302,6 +345,7 @@ TokenList Lexer::analyze(string_type const & expression)
 					tokens.push_back(make<Identity>());
 
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -322,6 +366,7 @@ TokenList Lexer::analyze(string_type const & expression)
 					tokens.push_back(make<Negation>());
 
 				++currentChar;
+				++curIndent_;
 				continue;
 			}
 
@@ -343,10 +388,11 @@ TokenList Lexer::analyze(string_type const & expression)
 
 					word += *currentChar;
 					++currentChar;
+					++curIndent_;
 				}
 					
 				if (!closed)
-					throw exception("Word has no closing \"");
+					throw exception("LexerException::Word has no closing \"");
 				
 				continue;
 			}
@@ -377,7 +423,7 @@ Token::pointer_type Lexer::getIdentifier(Lexer::string_type::const_iterator & cu
 		return iter->second;
 	else
 	{
-		return make<Variable>(ident);	
+		return make<Variable>(ident);
 	}
 
 	throw BadCharException(expression, curChar - begin(expression));
@@ -391,7 +437,7 @@ Token::pointer_type Lexer::getIdentifier(Lexer::string_type::const_iterator & cu
 */
 Token::pointer_type Lexer::getNumber(Lexer::string_type::const_iterator & curChar, Lexer::string_type const & expression)
 {
-	using float_type = boost::multiprecision::number < boost::multiprecision::cpp_dec_float<1000, int32_t, void> >;
+	using float_type = boost::multiprecision::number<boost::multiprecision::cpp_dec_float<1000, int32_t, void>>;
 	using int_type = boost::multiprecision::cpp_int;
 
 	auto currentCharNum = curChar;

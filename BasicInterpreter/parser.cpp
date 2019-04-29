@@ -203,7 +203,10 @@ Parser::stmt_p Parser::varDeclaration()
 	else if (is<VarObject>(type))
 		var->setType(VarType::OBJECT);
 	else if (is<VarVoid>(type))	// assumed to be a function/method
-		var->setType(VarType::VOID);
+		var->setType(VarType::VOID_TYPE);
+	else
+		throw ParserException(string("Variable \"" + var->getName() + "\" has an unknown type."));
+		
 
 	// this is a function
 	if (is<LeftBracket>(peek()))

@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BasicIDE"
+        xmlns:prop="clr-namespace:BasicIDE.Properties"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Title="{x:Static prop:Resources.winTitle}" Height="600" Width="800">
     <Grid>
         <DockPanel x:Name="dpContent" LastChildFill="True">
             <Menu DockPanel.Dock="Top">
@@ -15,8 +16,26 @@
                     <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
                 </MenuItem>
                 <MenuItem Header="_Execute" Command="{Binding ExecuteCommand}"/>
+                <MenuItem Header="_Help" Command="{Binding HelpCommand}"/>
             </Menu>
-            <TextBox x:Name="txtEditor" Text="{Binding ViewEditor.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1"/>
+                    <ColumnDefinition Width="8*" />
+                </Grid.ColumnDefinitions>
+                <TreeView x:Name="trFiles" Grid.Column="0"></TreeView>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"></GridSplitter>
+                <TextBox x:Name="txtEditor" Grid.Column="2" Text="{Binding ViewEditor.Text, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="True">
+                    <TextBox.InputBindings>
+                        <KeyBinding
+                            Key="Tab"
+                            Command="{Binding TabCommand}"
+                            CommandParameter="{x:Reference Name=txtEditor}"
+                        />
+                    </TextBox.InputBindings> 
+                </TextBox>
+            </Grid>
         </DockPanel>
     </Grid>
 </Window>
