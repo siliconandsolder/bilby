@@ -37,3 +37,5 @@ Floats and Ints can be implicitely converted to each another, but mixing any oth
 
 ## How To Use
 The project currently compiles as an executable and as a static library. The executable is really only useful for debugging the language. The library provides an entry class that acts as a Bilby interface for other programs. Right now I'm using it to build a small Bilby IDE.
+
+### MORE TO COME!
