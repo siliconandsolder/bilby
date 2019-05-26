@@ -14,6 +14,7 @@
 #include "float.hpp"
 #include "boolean.hpp"
 #include "word.hpp"
+#include "position_tracker.hpp"
 #include <stack>
 #include <exception>
 using namespace std;
@@ -132,7 +133,9 @@ Parser::stmt_p Parser::classStatement()
 		
 	consume<RightBrace>("Expected closing brace after class definition.");
 
-	return stmt_p(new StmtClass(name, super, data, methods));
+	stmt_p clas(new StmtClass(name, super, data, methods));
+	PositionTracker::addStatement(clas);
+	return clas;
 }
 
 /**
@@ -146,6 +149,7 @@ Parser::stmt_p Parser::printStatement()
 	expr_p val = expression();
 	consume<SemiColon>("Expected ';'");
 	stmt_p printer(new StmtPrint(val));
+	PositionTracker::addStatement(printer);
 	return printer;
 }
 
@@ -164,7 +168,9 @@ Parser::stmt_p Parser::retStatement()
 		val = expression();
 
 	consume<SemiColon>("Expected ';' after return statement.");
-	return stmt_p(new StmtReturn(ret, val));
+	stmt_p retStmt(new StmtReturn(ret, val));
+	PositionTracker::addStatement(retStmt);
+	return retStmt;
 }
 
 /**
@@ -178,6 +184,7 @@ Parser::stmt_p Parser::expStatement()
 	expr_p val = expression();
 	consume<SemiColon>("Expected ';'");
 	stmt_p expr(new StmtExpression(val));
+	PositionTracker::addStatement(expr);
 	return expr;
 }
 
@@ -222,6 +229,7 @@ Parser::stmt_p Parser::varDeclaration()
 
 	consume<SemiColon>("Expected ';'");
 	stmt_p expr(new StmtVariable(convert<Variable>(var), init));
+	PositionTracker::addStatement(expr);
 	return expr;
 }
 
@@ -285,7 +293,9 @@ Parser::stmt_p Parser::funcStatement(std::string kind, Variable::pointer_type na
 
 	consume<RightBrace>("Expected '}' after " + kind + ".");
 
-	return stmt_p(new StmtFunc(name, params, body));
+	stmt_p func(new StmtFunc(name, params, body));
+	PositionTracker::addStatement(func);
+	return func;
 
 }
 
@@ -303,6 +313,9 @@ Parser::stmt_p Parser::block()
 		statements.push_back(statement());
 
 	consume<RightBrace>("Expected '}'");
+	
+	stmt_p block(new StmtBlock(statements));
+	PositionTracker::addStatement(block);
 	return stmt_p(new StmtBlock(statements));
 }
 
@@ -324,7 +337,9 @@ Parser::stmt_p Parser::ifStatement()
 	if (check<Else>())
 		elseB = statement();
 		
-	return stmt_p(new StmtIf(cond, thenB, elseB));
+	stmt_p ifStmt(new StmtIf(cond, thenB, elseB));
+	PositionTracker::addStatement(ifStmt);
+	return ifStmt;
 }
 
 /**
@@ -340,7 +355,10 @@ Parser::stmt_p Parser::whileStatement()
 	consume<RightBracket>("Expected ')' after while condition.");
 
 	stmt_p whileB = statement();
-	return stmt_p(new StmtWhile(cond, whileB));
+
+	stmt_p whileStmt(new StmtWhile(cond, whileB));
+	PositionTracker::addStatement(whileStmt);
+	return whileStmt;
 }
 
 /**
@@ -358,7 +376,9 @@ Parser::stmt_p Parser::doWhileStatement()
 	expr_p cond = expression();
 	consume<RightBracket>("Expected ')' after while condition.");
 
-	return stmt_p(new StmtDoWhile(cond, whileB));
+	stmt_p whileStmt(new StmtDoWhile(cond, whileB));
+	PositionTracker::addStatement(whileStmt);
+	return whileStmt;
 }
 
 /**
@@ -404,6 +424,7 @@ Parser::stmt_p Parser::forStatement()
 	if (init != nullptr)
 		bod.reset(new StmtBlock(stmt_list{init, bod}));
 
+	PositionTracker::addStatement(bod);
 	return bod;
 }
 
@@ -426,7 +447,11 @@ bool Parser::isAtEnd()
 */
 Token::pointer_type Parser::advance()
 {
-	if (!isAtEnd()) ++current_;
+	if (!isAtEnd()) 
+	{
+		++current_;
+		++PositionTracker::itTokPos_;
+	}
 	return previous();
 }
 

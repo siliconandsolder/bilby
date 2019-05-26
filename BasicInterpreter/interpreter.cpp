@@ -19,6 +19,7 @@
 #include "return.hpp"
 #include "beta_instance.hpp"
 #include "beta_class.hpp"
+#include "position_tracker.hpp"
 #include <stack>
 #include <iostream>
 #include <sstream>
@@ -250,7 +251,7 @@ Token::pointer_type Interpreter::visit(GetExpression * expr)
 	if (obj == nullptr)
 	{
 		stringstream ss;
-		ss << "\"" << obj->toString() << "\" is not initialized!";
+		ss << "\"" << expr->name_->getName() << "\" is not initialized!";
 		throw InterpreterException(ss.str().c_str());
 	}
 
@@ -258,7 +259,7 @@ Token::pointer_type Interpreter::visit(GetExpression * expr)
 		return convert<BetaInstance>(obj)->get(expr->name_->getName());
 
 	stringstream ss;
-	ss << "InterpreterException: " << "\"" << obj->toString() << "\" is not an object.";
+	ss << "InterpreterException: " << "\"" << expr->name_->getName() << "\" is not an object.";
 	throw InterpreterException(ss.str().c_str());
 }
 
@@ -578,14 +579,17 @@ Token::pointer_type Interpreter::lookUpVariable(std::string name, Expression * e
 
 /**
 @name:		interpret
-@purpose:	Evaluates every statement in the programme
+@purpose:	Evaluates every statement in the program
 @param:		Interpreter::stmt_list
 @return:	void
 */
 void Interpreter::interpret(stmt_list lstState)
 {
 	for (auto state : lstState)
+	{
 		execute(state);
+		++PositionTracker::itStmtPos_;
+	}
 }
 
 /**

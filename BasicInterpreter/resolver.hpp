@@ -37,9 +37,9 @@ private:
 	void beginScope();
 	void endScope();
 	void resolve(std::shared_ptr<Expression> expr);
-	void declare(std::string name);
-	void define(std::string name);
-	void resolveLocal(Expression * expr, std::string name);
+	void declare(Token::pointer_type token);
+	void define(Token::pointer_type token);
+	void resolveLocal(Expression * expr, Token::pointer_type token);
 	void resolveFunction(StmtFunc * func, FuncType type);
 
 public:

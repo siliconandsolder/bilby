@@ -160,6 +160,7 @@
     <ClInclude Include="float.hpp" />
     <ClInclude Include="oper_exceptions.hpp" />
     <ClInclude Include="parser.hpp" />
+    <ClInclude Include="position_tracker.hpp" />
     <ClInclude Include="resolver.hpp" />
     <ClInclude Include="return.hpp" />
     <ClInclude Include="statement.hpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="operator.cpp" />
     <ClCompile Include="oper_exceptions.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="position_tracker.cpp" />
     <ClCompile Include="resolver.cpp" />
     <ClCompile Include="statement.cpp" />
     <ClCompile Include="token.cpp" />

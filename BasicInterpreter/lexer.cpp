@@ -17,6 +17,7 @@
 #include "integer.hpp"
 #include "keywords.hpp"
 #include "word.hpp"
+#include "position_tracker.hpp"
 
 #include <exception>
 #include <limits>
@@ -34,9 +35,6 @@ using namespace std;
 */
 Lexer::Lexer()
 {
-	curLine_ = 1;
-	curIndent_ = 0;
-
 	// keywords
 	specialTokens_["shout"] = make<Print>();
 	specialTokens_["if"] = make<If>();
@@ -94,36 +92,28 @@ TokenList Lexer::analyze(string_type const & expression)
 
 	for (;;)
 	{
-		while (currentChar != end(expression) && (isspace(*currentChar)))
+		while (currentChar != end(expression) && (isspace(*currentChar) || *currentChar == '\n' || *currentChar == '\r'))
 		{
 			++currentChar;
-			++curIndent_;
+			++PositionTracker::cursorPosition_;
 		}
-
-		if ((currentChar != end(expression) && (*currentChar == '\n' || *currentChar == '\r')))
-			curIndent_ = 1;
 			
-		while ((currentChar != end(expression) && (*currentChar == '\n' || *currentChar == '\r')))
-		{
-			++currentChar;
-			++curLine_;
-		}
 
 		if (currentChar == end(expression)) break;
 
 		if (isdigit(*currentChar))
 		{
-			auto currentCharCopy = currentChar;
 			tokens.push_back(getNumber(currentChar, expression));
-			curIndent_ += distance(currentCharCopy, currentChar);
+			PositionTracker::addToken(tokens.back());
+			PositionTracker::cursorPosition_ = distance(expression.begin(), currentChar);
 			continue;
 		}
 
 		if (isalpha(*currentChar))
 		{
-			auto currentCharCopy = currentChar;
 			tokens.push_back(getIdentifier(currentChar, expression));
-			curIndent_ += distance(currentCharCopy, currentChar);
+			PositionTracker::addToken(tokens.back());
+			PositionTracker::cursorPosition_ = distance(expression.begin(), currentChar);
 			continue;
 		}
 
@@ -163,8 +153,9 @@ TokenList Lexer::analyze(string_type const & expression)
 				{
 					tokens.push_back(make<Assignment>());
 				}
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
@@ -175,14 +166,15 @@ TokenList Lexer::analyze(string_type const & expression)
 					if (*(++currentChar) == '&')
 					{
 						tokens.push_back(make<And>());
+						PositionTracker::addToken(tokens.back());
 						++currentChar;
-						++curIndent_;
+						++PositionTracker::cursorPosition_;
 						continue;
 					}
 					else
 					{
 						--currentChar;
-						--curIndent_;
+						--PositionTracker::cursorPosition_;
 					}
 				}
 			}
@@ -194,14 +186,15 @@ TokenList Lexer::analyze(string_type const & expression)
 					if (*(++currentChar) == '|')
 					{
 						tokens.push_back(make<Or>());
+						PositionTracker::addToken(tokens.back());
 						++currentChar;
-						++curIndent_;
+						++PositionTracker::cursorPosition_;
 						continue;
 					}
 					else
 					{
 						--currentChar;
-						--curIndent_;
+						--PositionTracker::cursorPosition_;
 					}
 				}
 			}
@@ -209,122 +202,139 @@ TokenList Lexer::analyze(string_type const & expression)
 			if (*currentChar == '(')
 			{
 				tokens.push_back(make<LeftBracket>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == ')')
 			{
 				tokens.push_back(make<RightBracket>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '{')
 			{
 				tokens.push_back(make<LeftBrace>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '}')
 			{
 				tokens.push_back(make<RightBrace>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == ';')
 			{
 				tokens.push_back(make<SemiColon>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == ':')
 			{
 				tokens.push_back(make<Colon>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == ',')
 			{
 				tokens.push_back(make<Comma>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '.')
 			{
 				tokens.push_back(make<Dot>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '*')
 			{
 				tokens.push_back(make<Multiplication>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '/')
 			{
 				tokens.push_back(make<Division>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '!')
 			{
 				tokens.push_back(make<Factorial>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '^')
 			{
 				tokens.push_back(make<Power>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '>')
 			{
 				tokens.push_back(make<Greater>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == '<')
 			{
 				tokens.push_back(make<Less>());
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
 			if (*currentChar == ',')
 			{
 				if (is<Operand>(tokens.back()))
+				{
 					tokens.push_back(make<ArgSeparator>());
+					PositionTracker::addToken(tokens.back());
+				}
 
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
@@ -343,9 +353,10 @@ TokenList Lexer::analyze(string_type const & expression)
 				}
 				else
 					tokens.push_back(make<Identity>());
-
+				
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
@@ -365,8 +376,9 @@ TokenList Lexer::analyze(string_type const & expression)
 				else
 					tokens.push_back(make<Negation>());
 
+				PositionTracker::addToken(tokens.back());
 				++currentChar;
-				++curIndent_;
+				++PositionTracker::cursorPosition_;
 				continue;
 			}
 
@@ -374,21 +386,25 @@ TokenList Lexer::analyze(string_type const & expression)
 			{
 				string_type word = "";
 				bool closed = false;
+				auto currentCharCopy = currentChar;
 				++currentChar;
+				++PositionTracker::cursorPosition_;
 
 				while (currentChar != end(expression))
 				{
 					if (*currentChar == '"')
 					{
 						closed = true;
-						++currentChar;
 						tokens.push_back(make<Word>(word));
+						PositionTracker::addToken(tokens.back());
+						++currentChar;
+						++PositionTracker::cursorPosition_;
 						break;
 					}
 
 					word += *currentChar;
 					++currentChar;
-					++curIndent_;
+					++PositionTracker::cursorPosition_;
 				}
 					
 				if (!closed)

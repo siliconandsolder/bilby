@@ -7,6 +7,7 @@
 */
 
 #include "resolver.hpp"
+#include "position_tracker.hpp"
 #include <sstream>
 using namespace std;
 
@@ -18,10 +19,10 @@ using namespace std;
 */
 void Resolver::visit(StmtVariable * expr)
 {
-	declare(expr->var_->getName());
+	declare(expr->var_);
 	if (expr->expr_ != nullptr)
 		resolve(expr->expr_);
-	define(expr->var_->getName());
+	define(expr->var_);
 }
 
 /**
@@ -48,7 +49,7 @@ void Resolver::visit(StmtClass * expr)
 {
 	curClass_ = ClassType::CLASS;
 
-	declare(expr->name_->getName());
+	declare(expr->name_);
 	
 	if (expr->super_ != nullptr)
 	{
@@ -56,7 +57,7 @@ void Resolver::visit(StmtClass * expr)
 		resolve(expr->super_);
 	}
 
-	define(expr->name_->getName());
+	define(expr->name_);
 
 	// add the super class to scope if there is one
 	if (expr->super_ != nullptr)
@@ -69,8 +70,8 @@ void Resolver::visit(StmtClass * expr)
 	beginScope();
 	for (auto datum : expr->data_)
 	{
-		declare(datum->getName());
-		define(datum->getName());
+		declare(datum);
+		define(datum);
 	}
 
 	scopes_.back().insert(pair<string, bool>("me", true));
@@ -137,8 +138,12 @@ void Resolver::visit(StmtDoWhile * expr)
 */
 void Resolver::resolve(std::list<Statement::pointer_type> statements)
 {
-	for(auto statement : statements)
+	for (auto statement : statements)
+	{
 		resolve(statement);
+		++PositionTracker::itStmtPos_;
+	}
+		
 }
 
 Resolver::Resolver(Interpreter * interpreter)
@@ -204,18 +209,19 @@ void Resolver::resolve(std::shared_ptr<Expression> expr)
 @param:		std::string
 @return:	void
 */
-void Resolver::declare(std::string name)
+void Resolver::declare(Token::pointer_type token)
 {
 	if (scopes_.empty()) return;
 
-	if (scopes_.back().count(name) == 1)
+	if (scopes_.back().count(token->toString()) == 1)
 	{
+		// PositionTracker::lastTok_ = token;
 		stringstream ss;
-		ss << "ResolverException: Variable \"" << name << "\" already declared in this scope.";
+		ss << "ResolverException: Variable \"" << token->toString() << "\" already declared in this scope.";
 		throw ResolverException(ss.str());
 	}
 		
-	scopes_.back().insert(pair<string, bool>(name, false));
+	scopes_.back().insert(pair<string, bool>(token->toString(), false));
 }
 
 /**
@@ -224,11 +230,11 @@ void Resolver::declare(std::string name)
 @param:		std::string
 @return:	void
 */
-void Resolver::define(std::string name)
+void Resolver::define(Token::pointer_type token)
 {
 	if (scopes_.empty()) return;
 
-	scopes_.back().at(name) = true;
+	scopes_.back().at(token->toString()) = true;
 }
 
 /**
@@ -238,19 +244,21 @@ void Resolver::define(std::string name)
 @param:		Expression *, std::string
 @return:	void
 */
-void Resolver::resolveLocal(Expression * expr, std::string name)
+void Resolver::resolveLocal(Expression * expr, Token::pointer_type token)
 {
 	for (int i = scopes_.size() - 1; i >= 0; --i)
 	{
-		if (scopes_.at(i).count(name) == 1)
+		if (scopes_.at(i).count(token->toString()) == 1)
 		{
 			interpreter_->resolve(expr, scopes_.size() - 1 - i);
 			return;
 		}
 	}
 
+	/*PositionTracker::lastExp_ = Expression::pointer_type(expr);
+	PositionTracker::lastTok_ = token;*/
 	stringstream ss;
-	ss << "ResolverException: Variable \"" << name << "\" does not exist anywhere in memory.";
+	ss << "ResolverException: Variable \"" << token->toString() << "\" does not exist anywhere in memory.";
 	throw ResolverException(ss.str());
 
 }
@@ -269,8 +277,8 @@ void Resolver::resolveFunction(StmtFunc * func, FuncType type)
 	beginScope();
 	for (auto param : func->params_)
 	{
-		declare(param->toString());
-		define(param->toString());
+		declare(param);
+		define(param);
 	}
 	resolve(func->body_);
 	endScope();
@@ -287,7 +295,7 @@ void Resolver::resolveFunction(StmtFunc * func, FuncType type)
 Token::pointer_type Resolver::visit(AssignExpression * expr)
 {
 	resolve(expr->expr_);
-	resolveLocal(expr, expr->oper_->getName());
+	resolveLocal(expr, expr->oper_);
 	return nullptr;
 }
 
@@ -377,12 +385,14 @@ Token::pointer_type Resolver::visit(VariableExpression * expr)
 {
 	if (!scopes_.empty() && !(scopes_.back().at(expr->oper_->getName())))
 	{
+		/*PositionTracker::lastExp_ = Expression::pointer_type(expr);
+		PositionTracker::lastTok_ = expr->oper_;*/
 		stringstream ss;
 		ss << "ResolverException: " << "Cannot read local variable \"" << expr->oper_->getName() << "\" in its own initializer!";
 		throw ResolverException(ss.str());
 	}
 
-	resolveLocal(expr, expr->oper_->getName());
+	resolveLocal(expr, expr->oper_);
 	return nullptr;
 }
 
@@ -420,9 +430,13 @@ Token::pointer_type Resolver::visit(SetExpression * expr)
 Token::pointer_type Resolver::visit(MeExpression * expr)
 {
 	if (curClass_ != ClassType::CLASS)
+	{
+		//PositionTracker::lastTok_ = expr->keyword_;
+		//PositionTracker::lastExp_ = Expression::pointer_type(expr);
 		throw exception("ResolverException: Cannot use 'me' keyword outside of a class.");
-
-	resolveLocal(expr, expr->keyword_->getName());
+	}
+		
+	resolveLocal(expr, expr->keyword_);
 	return nullptr;
 }
 
@@ -435,11 +449,19 @@ Token::pointer_type Resolver::visit(MeExpression * expr)
 Token::pointer_type Resolver::visit(SuperExpression * expr)
 {
 	if (curClass_ == ClassType::NONE)
+	{
+		/*PositionTracker::lastExp_ = Expression::pointer_type(expr);
+		PositionTracker::lastTok_ = expr->keyword_;*/
 		throw exception("Cannot use 'super' keyword outside of class.");
+	}
 	else if (curClass_ != ClassType::SUBCLASS)
+	{
+		/*PositionTracker::lastExp_ = Expression::pointer_type(expr);
+		PositionTracker::lastTok_ = expr->keyword_;*/
 		throw exception("Cannot use 'super' keyword in class with no superclass.");
+	}
 
-	resolveLocal(expr, expr->keyword_->toString());
+	resolveLocal(expr, expr->keyword_);
 	return nullptr;
 }
 
@@ -462,8 +484,8 @@ void Resolver::visit(StmtExpression * expr)
 */
 void Resolver::visit(StmtFunc * expr)
 {
-	declare(expr->ident_->getName());
-	define(expr->ident_->getName());
+	declare(expr->ident_);
+	define(expr->ident_);
 	resolveFunction(expr, FuncType::FUNC);
 }
 
@@ -487,12 +509,20 @@ void Resolver::visit(StmtPrint * expr)
 void Resolver::visit(StmtReturn * expr)
 {
 	if (curFunc_ == FuncType::NONE)
+	{
+		/*PositionTracker::lastExp_ = Expression::pointer_type(expr->expr_);
+		PositionTracker::lastTok_ = expr->ret_;*/
 		throw ResolverException("ResolverException: Cannot return from outside of a function!");
+	}
 
 	if (expr->expr_)
 	{
 		if (curFunc_ == FuncType::INIT)
+		{
+			/*PositionTracker::lastExp_ = Expression::pointer_type(expr->expr_);
+			PositionTracker::lastTok_ = expr->ret_;*/
 			throw ResolverException("ResolverException: Cannot return from an init function!");
+		}
 
 		resolve(expr->expr_);
 	}
