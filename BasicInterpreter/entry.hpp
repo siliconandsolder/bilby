@@ -8,11 +8,9 @@
 
 #pragma once
 #include <string>
-#include <Windows.h>
 
 class Entry
 {
 public:
 	static void interpret(std::string text);
-	static void setStdHandle(HANDLE handle);
 };

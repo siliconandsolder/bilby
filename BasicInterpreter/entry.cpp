@@ -11,8 +11,8 @@
 #include "lexer.hpp"
 #include "interpreter.hpp"
 #include "resolver.hpp"
+#include "position_tracker.hpp"
 #include <iostream>
-#include <consoleapi.h>
 using namespace std;
 
 /**
@@ -25,26 +25,34 @@ void Entry::interpret(std::string text)
 {
 	try
 	{
+		PositionTracker::rawCode_ = text;
+		PositionTracker::cursorPosition_ = 0;
+		PositionTracker::stage_ = Stage::RAW;
+
 		Lexer lex;
-		TokenList tokens = lex.analyze(text);
+		TokenList list = lex.analyze(PositionTracker::rawCode_);
 
-		Parser p(tokens);
-		Parser::stmt_list lst = p.parse();
+		PositionTracker::stage_ = Stage::LEXED;
+		PositionTracker::itTokPos_ = PositionTracker::tokenPosition_.cbegin();
+		PositionTracker::cursorPosition_ = 0;
 
-		Interpreter it;
+		Parser parse(list);
+		Parser::stmt_list stmts = parse.parse();
 
-		Resolver res(&it);
-		res.resolve(lst);
+		PositionTracker::itStmtPos_ = PositionTracker::stmtPosition_.cbegin();
+		PositionTracker::stage_ = Stage::PARSED;
 
-		it.interpret(lst);
+		Interpreter interpreter;
+		Resolver resolver(&interpreter);
+		resolver.resolve(stmts);
+
+		PositionTracker::itStmtPos_ = PositionTracker::stmtPosition_.cbegin();
+
+		interpreter.interpret(stmts);
 	}
 	catch (exception& ex)
 	{
-		cout << ex.what() << endl;
+		cerr << ex.what() << endl;
+		cerr << PositionTracker::printPosition() << endl;
 	}
-}
-
-void Entry::setStdHandle(HANDLE handle)
-{
-	SetStdHandle(STD_OUTPUT_HANDLE, handle);
 }
