@@ -2,7 +2,7 @@
 ### A very basic, interpreted language written in C++.
 
 ## Disclaimer
-Some of the code is this project was adapted from a project I did while attending Fanshawe College's Computer Programmer Analyst (CPA) programme. That project is the property of Garth Santor (gsantor@fanshaweonline.ca), a professor of the CPA programme who has given me permission to use it here. If you have any questions regarding the ownership/legality of the files in this project, feel free to contact either of us.
+Some of the code is this project was adapted from a project I did while attending Fanshawe College's [Computer Programmer Analyst](https://www.fanshawec.ca/programs/cpa2-computer-programmer-analyst/next) (CPA) programme. That project is the property of Garth Santor (gsantor@fanshaweonline.ca), a professor of the CPA programme who has given me permission to use it here. If you have any questions regarding the ownership/legality of the files in this project, feel free to contact either of us.
 
 ## What is this, exactly?
 This project is partially a C++ implementation of Jlox, the language described in Bob Nystrom's book [*Crafting Intepreters*](http://craftinginterpreters.com/). Bilby shares many similarities with Jlox, but has a few key differences:
