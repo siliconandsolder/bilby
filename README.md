@@ -7,7 +7,7 @@ Some of the code is this project was adapted from a project I did while attendin
 ## What is this, exactly?
 This project is partially a C++ implementation of Jlox, the language described in Bob Nystrom's book [*Crafting Intepreters*](http://craftinginterpreters.com/). Bilby shares many similarities with Jlox, but has a few key differences:
 * Bilby is strongly-typed. Variables must be declared with a type, and functions must specify a return type. 
-* If a program written in Bilby exits with an error, Bilby will inform the user where exactly the program failed.
+* If a program written in Bilby exits with an error, the interpreter will inform the user where the program failed.
 * Bilby's class variables must be declared in the class itself, whereas JLox allows new variables to be added after instantiation.
 * Bilby classes have a rigid structure:
 ```
