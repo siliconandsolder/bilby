@@ -20,6 +20,8 @@ data:
 methods:
     object init()
     {
+        me.a = 1;
+        me.b = 1.5;
         shout a + b;
         return me;
     }
