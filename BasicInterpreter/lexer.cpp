@@ -61,10 +61,6 @@ Lexer::Lexer()
 	// function-only type
 	specialTokens_["void"] = make<VarVoid>();
 
-	// constants
-	specialTokens_["pi"] = make<Pi>();
-	specialTokens_["e"] = make<E>();
-
 	// special operators
 	specialTokens_["and"] = make<And>();
 	specialTokens_["nand"] = make<Nand>();

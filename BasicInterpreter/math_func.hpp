@@ -71,7 +71,7 @@ public:
 	DEF_POINTER_TYPE(Rnd)
 	DEF_IS_CONVERTIBLE_FROM(Rnd)
 
-	virtual unsigned short arity() override { return 1; }
+	virtual unsigned short arity() override { return 2; }
 	virtual Token::pointer_type call(Interpreter * interpreter, std::list<Token::pointer_type> args) override;
 	virtual string_type toString() { return "<func | native | Random>"; }
 };
@@ -115,7 +115,7 @@ public:
 	DEF_POINTER_TYPE(Pow)
 	DEF_IS_CONVERTIBLE_FROM(Pow)
 
-	virtual unsigned short arity() override { return 1; }
+	virtual unsigned short arity() override { return 2; }
 	virtual Token::pointer_type call(Interpreter * interpreter, std::list<Token::pointer_type> args) override;
 	virtual string_type toString() { return "<func | native | Power>"; }
 };
