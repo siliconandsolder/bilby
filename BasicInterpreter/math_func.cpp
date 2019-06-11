@@ -42,10 +42,7 @@ Token::pointer_type Pow::call(Interpreter * interpreter, std::list<Token::pointe
 			else
 				powVal = static_cast<Float::value_type>(getValue<Float>(pow));
 			
-			if (is<Integer>(num) && is<Integer>(pow))
-				return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::pow(numVal, powVal)))));
-			else
-				return tok_p(float_p(new Float(boost::multiprecision::pow(numVal, powVal))));
+			return tok_p(float_p(new Float(boost::multiprecision::pow(numVal, powVal))));
 		}
 		else if (is<Boolean>(pow))
 		{
@@ -76,14 +73,15 @@ Token::pointer_type Tan::call(Interpreter * interpreter, std::list<Token::pointe
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = static_cast<Float::value_type>(getValue<Integer>(num));
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::tan(numVal)))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
 		return tok_p(float_p(new Float(boost::multiprecision::tan(numVal))));
 	}
 	else if (is<Boolean>(num))
@@ -106,14 +104,15 @@ Token::pointer_type Sqr::call(Interpreter * interpreter, std::list<Token::pointe
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = static_cast<Float::value_type>(getValue<Integer>(num));
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::sqrt(numVal)))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
 		return tok_p(float_p(new Float(boost::multiprecision::sqrt(numVal))));
 	}
 	else if (is<Boolean>(num))
@@ -136,14 +135,15 @@ Token::pointer_type Sin::call(Interpreter * interpreter, std::list<Token::pointe
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = static_cast<Float::value_type>(getValue<Integer>(num));
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::sin(numVal)))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
 		return tok_p(float_p(new Float(boost::multiprecision::sin(numVal))));
 	}
 	else if (is<Boolean>(num))
@@ -201,7 +201,7 @@ Token::pointer_type Rnd::call(Interpreter * interpreter, std::list<Token::pointe
 		if (is<Integer>(end))
 			endVal = static_cast<Float::value_type>(getValue<Integer>(end));
 		else
-			endVal = static_cast<Float::value_type>(getValue<Float>(end));
+			endVal = getValue<Float>(end);
 
 		if (is<Integer>(end) || is<Float>(end))
 		{
@@ -237,15 +237,16 @@ Token::pointer_type Log::call(Interpreter * interpreter, std::list<Token::pointe
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = getValue<Integer>(num);
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::log10(static_cast<Float::value_type>(numVal))))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
-		return tok_p(float_p(new Float(Float::value_type(boost::multiprecision::log10(numVal)))));
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
+		return tok_p(float_p(new Float(boost::multiprecision::log10(numVal))));
 	}
 	else if (is<Boolean>(num))
 	{
@@ -267,15 +268,16 @@ Token::pointer_type Expo::call(Interpreter * interpreter, std::list<Token::point
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = getValue<Integer>(num);
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::exp(static_cast<Float::value_type>(numVal))))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
-		return tok_p(float_p(new Float(Float::value_type(boost::multiprecision::exp(numVal)))));
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
+		return tok_p(float_p(new Float(boost::multiprecision::exp(numVal))));
 	}
 	else if (is<Boolean>(num))
 	{
@@ -297,15 +299,16 @@ Token::pointer_type Cos::call(Interpreter * interpreter, std::list<Token::pointe
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = getValue<Integer>(num);
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::cos(static_cast<Float::value_type>(numVal))))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
-		return tok_p(float_p(new Float(Float::value_type(boost::multiprecision::cos(numVal)))));
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
+		return tok_p(float_p(new Float(boost::multiprecision::cos(numVal))));
 	}
 	else if (is<Boolean>(num))
 	{
@@ -328,15 +331,16 @@ Token::pointer_type Arctan::call(Interpreter * interpreter, std::list<Token::poi
 {
 	auto num = args.front();
 
-	if (is<Integer>(num))
+	Float::value_type numVal;
+
+	if (is<Integer>(num) || is<Float>(num))
 	{
-		auto numVal = getValue<Integer>(num);
-		return tok_p(int_p(new Integer(static_cast<Integer::value_type>(boost::multiprecision::atan(static_cast<Float::value_type>(numVal))))));
-	}
-	else if (is<Float>(num))
-	{
-		auto numVal = getValue<Float>(num);
-		return tok_p(float_p(new Float(Float::value_type(boost::multiprecision::atan(numVal)))));
+		if (is<Integer>(num))
+			numVal = static_cast<Float::value_type>(getValue<Integer>(num));
+		else
+			numVal = getValue<Float>(num);
+
+		return tok_p(float_p(new Float(boost::multiprecision::atan(numVal))));
 	}
 	else if (is<Boolean>(num))
 	{
